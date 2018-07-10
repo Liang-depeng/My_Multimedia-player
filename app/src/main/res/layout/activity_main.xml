@@ -21,6 +21,7 @@
     <!--RadioGroup-->
 
     <RadioGroup
+        android:id="@+id/rg_tab"
         android:padding="3dp"
         android:gravity="center_vertical"
         android:background="#11000000"
@@ -38,19 +39,19 @@
         <RadioButton
             android:id="@+id/rb_internet_music"
             android:text="网络音乐"
-            android:drawableTop="@drawable/rb_local_music_pic_selectcolor"
+            android:drawableTop="@drawable/rb_internet_music_pic_selectcolor"
             style="@style/bottom_tab_style"
             />
         <RadioButton
             android:id="@+id/rb_local_video"
             android:text="本地视频"
-            android:drawableTop="@drawable/rb_local_music_pic_selectcolor"
+            android:drawableTop="@drawable/rb_local_video_pic_selectcolor"
             style="@style/bottom_tab_style"
             />
         <RadioButton
             android:id="@+id/rb_internet_video"
             android:text="网络视频"
-            android:drawableTop="@drawable/rb_local_music_pic_selectcolor"
+            android:drawableTop="@drawable/rb_internet_video_pic_selectcolor"
             style="@style/bottom_tab_style"
             />
     </RadioGroup>

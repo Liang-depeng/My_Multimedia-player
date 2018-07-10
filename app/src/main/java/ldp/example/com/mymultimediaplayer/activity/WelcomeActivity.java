@@ -1,4 +1,4 @@
-package ldp.example.com.mymultimediaplayer;
+package ldp.example.com.mymultimediaplayer.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.Window;
 
 
-import ldp.example.com.mymultimediaplayer.activity.MainActivity;
+import ldp.example.com.mymultimediaplayer.R;
 
 
 public class WelcomeActivity extends Activity {
