@@ -40,6 +40,7 @@ public class WelcomeActivity extends Activity {
 
     /**
      * @param event 触屏
+     *
      * @return    触屏事件
      */
     @Override
