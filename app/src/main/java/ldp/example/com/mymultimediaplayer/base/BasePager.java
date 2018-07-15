@@ -10,6 +10,7 @@ public abstract class BasePager {
 
     public  Context context;
     public View rootview;
+    public boolean isInitData;
     /**
      * 构造方法
      * @param context 上下文

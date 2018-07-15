@@ -3,14 +3,19 @@ package ldp.example.com.mymultimediaplayer.activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import java.util.ArrayList;
 import ldp.example.com.mymultimediaplayer.Pager.InternetMusicPager;
@@ -30,15 +35,38 @@ public class MainActivity extends FragmentActivity {
      * 页面集合
      */
     private static ArrayList<BasePager> basePagers;
+    private DrawerLayout mDrawerLayout;
+    private ImageView mImageView_mine;
+    private NavigationView mNv_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.cehua_layout);
 
-        flame_content = (FrameLayout) findViewById(R.id.flame_content);
-        rg_tab = (RadioGroup) findViewById(R.id.rg_tab);
+        flame_content = (FrameLayout) findViewById(R.id.flame_content); //主页面布局
+        rg_tab = (RadioGroup) findViewById(R.id.rg_tab);//底部
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.ce_hua);//侧滑菜单
+        mImageView_mine = (ImageView) findViewById(R.id.imageView_mine);// 左上角导航栏
+        mNv_list = (NavigationView) findViewById(R.id.nv_list);//侧滑菜单列表
+        mImageView_mine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.openDrawer(GravityCompat.START);//侧滑菜单
+            }
+        });
 
+        mNv_list.setCheckedItem(R.id.nav_0);// 侧滑菜单默认选择第一个
+        /**
+         * 侧滑菜各个选项监听器
+         */
+        mNv_list.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                mDrawerLayout.closeDrawers();
+                return true;
+            }
+        });
 
         /**
          * 添加页面
@@ -59,6 +87,9 @@ public class MainActivity extends FragmentActivity {
     }
 
 
+    /**
+     * 页面底部4个按钮监听
+     */
     class MyOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -80,6 +111,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+
+    /**
+     * 获取fragment
+     */
     private void setFragment() {
         //得到Fragmentmanager
         FragmentManager manager = getSupportFragmentManager();
@@ -97,11 +132,12 @@ public class MainActivity extends FragmentActivity {
      */
     private static BasePager getBasePager() {
         BasePager basePager = basePagers.get(position);
-        if (basePager!=null) {
+        if (basePager!=null&&!basePager.isInitData) {
             /**
              * 联网请求或绑定数据
              */
             basePager.initData();
+            basePager.isInitData = true;
         }
         return basePager;
     }
@@ -117,6 +153,7 @@ public class MainActivity extends FragmentActivity {
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             BasePager basePager = getBasePager();
             if (basePager!=null){
+
                 return basePager.rootview;
             }
             return null;
