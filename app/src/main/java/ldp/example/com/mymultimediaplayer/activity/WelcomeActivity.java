@@ -52,6 +52,7 @@ public class WelcomeActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        //移除所有的消息和回调
         mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }

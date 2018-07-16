@@ -21,7 +21,7 @@ public abstract class BasePager {
     }
 
     /**
-     * 强制孩子实现
+     * 强制子类实现
      * @return
      */
     public abstract View initView();
