@@ -3,10 +3,13 @@ package ldp.example.com.mymultimediaplayer.base;
 import android.content.Context;
 import android.view.View;
 
+import ldp.example.com.mymultimediaplayer.utils.BaseActivity;
+
+
 /**
  * created by ldp at 2018/7/11
  */
-public abstract class BasePager {
+public abstract class BasePager extends BaseActivity{
 
     public  Context context;
     public View rootview;
