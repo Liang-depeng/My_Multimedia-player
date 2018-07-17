@@ -76,13 +76,40 @@ public class MainActivity extends BaseActivity {
         });
 
         mNv_list.setCheckedItem(R.id.nav_0);// 侧滑菜单默认选择第一个
+
         /**
          * 侧滑菜各个选项监听器
+         *
+         * 根据需要增删
          */
         mNv_list.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                mDrawerLayout.closeDrawers();
+
+                int id = item.getItemId();
+                switch (id){
+                    default:
+                        break;
+                    case R.id.nav_0:
+                        Toast.makeText(MainActivity.this,"我是第0个选项",Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.nav_1:
+                        Toast.makeText(MainActivity.this,"我是第1个选项",Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.nav_2:
+                        Toast.makeText(MainActivity.this,"我是第2个选项",Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.nav_3:
+                        Toast.makeText(MainActivity.this,"我是第3个选项",Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.nav_4:
+                        Toast.makeText(MainActivity.this,"我是第4个选项",Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.nav_5:
+                        Toast.makeText(MainActivity.this,"我是第5个选项",Toast.LENGTH_LONG).show();
+                        break;
+                }
+               // mDrawerLayout.closeDrawers();
                 return true;
             }
         });
@@ -115,19 +142,15 @@ public class MainActivity extends BaseActivity {
             switch (checkedId){
                 default:
                     position = 0;
-
                     break;
                 case R.id.rb_internet_music:
                     position = 1;
-
                     break;
                 case R.id.rb_local_video:
-
                     position = 2;
                     break;
                 case R.id.rb_internet_video:
                     position = 3;
-
                     break;
             }
             setFragment();

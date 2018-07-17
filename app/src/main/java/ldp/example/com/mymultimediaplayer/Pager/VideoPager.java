@@ -1,28 +1,20 @@
 package ldp.example.com.mymultimediaplayer.Pager;
 
-import android.Manifest;
-import android.app.Activity;
+
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-
 import ldp.example.com.mymultimediaplayer.R;
+import ldp.example.com.mymultimediaplayer.adapter.VideoPagerAdapter;
 import ldp.example.com.mymultimediaplayer.base.BasePager;
 import ldp.example.com.mymultimediaplayer.domain.MediaItem;
 import ldp.example.com.mymultimediaplayer.utils.LogUtil;
@@ -35,7 +27,7 @@ public class VideoPager extends BasePager {
     private TextView local_no_video;
     private ProgressBar local_video_progressbar;
     private ArrayList<MediaItem> mediaItems_list;//数据集合
-    private int ispermission = 0;
+    private VideoPagerAdapter mVideoPagerAdapter;
 
 
     /**
@@ -53,13 +45,17 @@ public class VideoPager extends BasePager {
             super.handleMessage(msg);
             if (mediaItems_list != null && mediaItems_list.size() > 0) {
                 //有数据   + 适配器
+                mVideoPagerAdapter = new VideoPagerAdapter(context,mediaItems_list);
+                local_video_list.setAdapter(mVideoPagerAdapter);
                 //隐藏文本和progressbar
+                local_no_video.setVisibility(View.GONE);
             } else {
                 //无数据
-                //文本隐藏
+                //文本显示
+                local_no_video.setVisibility(View.VISIBLE);
             }
-
             //progressbar隐藏
+            local_video_progressbar.setVisibility(View.GONE);
         }
     };
 
@@ -113,7 +109,7 @@ public class VideoPager extends BasePager {
                         MediaStore.Video.Media.SIZE,
                         //视频绝对地址
                         MediaStore.Video.Media.DATA,
-                        //
+                        //艺术家名称
                         MediaStore.Video.Media.ARTIST
                 };
 
