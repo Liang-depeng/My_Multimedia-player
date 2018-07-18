@@ -22,7 +22,9 @@
         <activity android:name=".activity.MainActivity" android:launchMode="singleTask">
 
         </activity>
-        <activity android:name=".activity.SystemVideoPlayer"/>
+        <activity android:name=".activity.SystemVideoPlayer">
+
+        </activity>
     </application>
 
 </manifest>

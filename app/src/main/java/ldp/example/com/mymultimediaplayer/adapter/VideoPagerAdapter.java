@@ -64,6 +64,7 @@ public class VideoPagerAdapter extends BaseAdapter {
 
             convertView.setTag(viewHolder);
 
+
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
