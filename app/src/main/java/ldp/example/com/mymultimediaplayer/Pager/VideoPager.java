@@ -176,6 +176,7 @@ public class VideoPager extends BasePager {
             startActivity(intent);*/
 
 
+
         }
     }
 }
