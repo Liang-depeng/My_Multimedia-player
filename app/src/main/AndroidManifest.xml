@@ -19,11 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity" android:launchMode="singleTask">
-
+        <activity android:name=".activity.MainActivity" android:launchMode="singleTask"
+            android:configChanges="keyboard|screenSize|orientation">
         </activity>
-        <activity android:name=".activity.SystemVideoPlayer">
-
+        <activity android:name=".activity.SystemVideoPlayer"
+            android:configChanges="orientation|keyboard|screenSize">
         </activity>
     </application>
 

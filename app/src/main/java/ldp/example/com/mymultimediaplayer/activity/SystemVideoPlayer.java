@@ -39,11 +39,11 @@ public class SystemVideoPlayer extends Activity{
             mVideoView.setVideoURI(mUri);
         }
 
-        /**
-         * 设置控制面板
-         * 安卓系统自带控制面板
-         */
-        mVideoView.setMediaController(new MediaController(this));
+//        /**
+//         * 设置控制面板
+//         * 安卓系统自带控制面板
+//         */
+       // mVideoView.setMediaController(new MediaController(this));
     }
 
     private class MyOnPreparedListener implements MediaPlayer.OnPreparedListener {

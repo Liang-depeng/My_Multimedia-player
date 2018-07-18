@@ -168,7 +168,7 @@ public class VideoPager extends BasePager {
             //调用自己写的播放器
             Intent intent = new Intent(context,SystemVideoPlayer.class);
             intent.setDataAndType(Uri.parse(mediaItem.getData()),"video/*");
-            context.startActivity(intent);
+            startActivity(intent);
 
             //隐式意图
 /*            Intent intent = new Intent();
