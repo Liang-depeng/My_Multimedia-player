@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 
@@ -24,11 +25,11 @@ import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
  */
 public class VideoPagerAdapter extends BaseAdapter {
     private LayoutInflater inflater;
-    private List<MediaItem> videoPagerData_list;
+    private ArrayList<MediaItem> videoPagerData_list;
     private Context mContext;
     private TimeUtils mTimeUtils;
 
-    public VideoPagerAdapter(Context context, List<MediaItem> list) {
+    public VideoPagerAdapter(Context context, ArrayList<MediaItem> list) {
         this.mContext = context;
         this.videoPagerData_list = list;
         inflater = LayoutInflater.from(mContext);

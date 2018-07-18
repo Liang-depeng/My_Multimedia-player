@@ -3,17 +3,21 @@ package ldp.example.com.mymultimediaplayer.Pager;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.util.ArrayList;
 import ldp.example.com.mymultimediaplayer.R;
+import ldp.example.com.mymultimediaplayer.activity.SystemVideoPlayer;
 import ldp.example.com.mymultimediaplayer.adapter.VideoPagerAdapter;
 import ldp.example.com.mymultimediaplayer.base.BasePager;
 import ldp.example.com.mymultimediaplayer.domain.MediaItem;
@@ -67,6 +71,12 @@ public class VideoPager extends BasePager {
         local_no_video = (TextView) view.findViewById(R.id.local_no_video);
         local_video_progressbar = (ProgressBar) view.findViewById(R.id.local_video_progressbar);
 
+        /**
+         * 设置点击事件
+         */
+
+        local_video_list.setOnItemClickListener(new MyOnItemClickListener());
+
         LogUtil.e("本地视频页面初始化");
         return view;
     }
@@ -94,6 +104,7 @@ public class VideoPager extends BasePager {
             @Override
             public void run() {
                 super.run();
+                SystemClock.sleep(1000);
                 mediaItems_list = new ArrayList<>();
 
                 ContentResolver resolver = context.getContentResolver();
@@ -146,4 +157,25 @@ public class VideoPager extends BasePager {
     }
 
 
+    /**
+     * 视频列表点击事件监听
+     */
+    public class MyOnItemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            MediaItem mediaItem = mediaItems_list.get(position);
+
+            //调用自己写的播放器
+            Intent intent = new Intent(context,SystemVideoPlayer.class);
+            intent.setDataAndType(Uri.parse(mediaItem.getData()),"video/*");
+            context.startActivity(intent);
+
+            //隐式意图
+/*            Intent intent = new Intent();
+            intent.setDataAndType(Uri.parse(mediaItem.getData()),"video/*");
+            startActivity(intent);*/
+
+
+        }
+    }
 }
