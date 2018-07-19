@@ -15,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import java.util.ArrayList;
+
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.activity.SystemVideoPlayer;
 import ldp.example.com.mymultimediaplayer.adapter.VideoPagerAdapter;
@@ -49,7 +51,7 @@ public class VideoPager extends BasePager {
             super.handleMessage(msg);
             if (mediaItems_list != null && mediaItems_list.size() > 0) {
                 //有数据   + 适配器
-                mVideoPagerAdapter = new VideoPagerAdapter(context,mediaItems_list);
+                mVideoPagerAdapter = new VideoPagerAdapter(context, mediaItems_list);
                 local_video_list.setAdapter(mVideoPagerAdapter);
                 //隐藏文本和progressbar
                 local_no_video.setVisibility(View.GONE);
@@ -87,10 +89,9 @@ public class VideoPager extends BasePager {
         super.initData();
         LogUtil.e("本地视频页面data初始化");
         //加载数据
-            getDataFromlocal();
+        getDataFromlocal();
 
     }
-
 
 
     /**
@@ -166,15 +167,17 @@ public class VideoPager extends BasePager {
             MediaItem mediaItem = mediaItems_list.get(position);
 
             //调用自己写的播放器
-            Intent intent = new Intent(context,SystemVideoPlayer.class);
-            intent.setDataAndType(Uri.parse(mediaItem.getData()),"video/*");
-            startActivity(intent);
+            Intent intent = new Intent(context, SystemVideoPlayer.class);
+            intent.setDataAndType(Uri.parse(mediaItem.getData()), "video/*");
+            /**
+             * content上下文一定要写，否则会出现空指针异常
+             */
+            context.startActivity(intent);
 
             //隐式意图
 /*            Intent intent = new Intent();
             intent.setDataAndType(Uri.parse(mediaItem.getData()),"video/*");
             startActivity(intent);*/
-
 
 
         }

@@ -20,7 +20,7 @@ import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
 
 /**
  * created by ldp at 2018/7/17
- *
+ * <p>
  * 本地视频页面适配器
  */
 public class VideoPagerAdapter extends BaseAdapter {
@@ -54,18 +54,18 @@ public class VideoPagerAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        if (convertView == null){
-            convertView = View.inflate(mContext, R.layout.item_videopager,null);
+        if (convertView == null) {
+            convertView = View.inflate(mContext, R.layout.item_videopager, null);
             viewHolder = new ViewHolder();
-            viewHolder.ic_video_pic1=(ImageView)convertView.findViewById(R.id.ic_video_pic);
-            viewHolder.local_video_name1=(TextView) convertView.findViewById(R.id.local_video_name);
-            viewHolder.local_video_time1=convertView.findViewById(R.id.local_video_time);
-            viewHolder.local_video_size1 =convertView.findViewById(R.id.local_video_size);
+            viewHolder.ic_video_pic1 = (ImageView) convertView.findViewById(R.id.ic_video_pic);
+            viewHolder.local_video_name1 = (TextView) convertView.findViewById(R.id.local_video_name);
+            viewHolder.local_video_time1 = convertView.findViewById(R.id.local_video_time);
+            viewHolder.local_video_size1 = convertView.findViewById(R.id.local_video_size);
 
             convertView.setTag(viewHolder);
 
 
-        }else {
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
@@ -75,11 +75,11 @@ public class VideoPagerAdapter extends BaseAdapter {
         viewHolder.local_video_name1.setText(videoPagerData_list.get(position).getName());
         viewHolder.local_video_time1.setText(mTimeUtils.stringForTime((int) videoPagerData_list.get(position).getDuration()));
         viewHolder.local_video_size1.setText(android.text.format.Formatter.
-                formatFileSize(mContext,videoPagerData_list.get(position).getSize()));
+                formatFileSize(mContext, videoPagerData_list.get(position).getSize()));
         return convertView;
     }
 
-    public static class ViewHolder{
+    public static class ViewHolder {
         private ImageView ic_video_pic1;
         private TextView local_video_name1;
         private TextView local_video_time1;

@@ -9,7 +9,7 @@ import ldp.example.com.mymultimediaplayer.utils.BaseActivity;
 /**
  * created by ldp at 2018/7/11
  */
-public abstract class BasePager extends BaseActivity{
+public abstract class BasePager{
 
     public  Context context;
     public View rootview;
