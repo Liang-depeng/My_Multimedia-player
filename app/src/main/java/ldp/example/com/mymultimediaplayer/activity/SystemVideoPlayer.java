@@ -65,6 +65,9 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         //播放完成监听
         mVideoView.setOnCompletionListener(new MyOnCompletionListener());
 
+        //视频拖动
+        seekbarVideo.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener());
+
         //得到播放地址
         mUri = getIntent().getData();
         if (mUri != null) {
@@ -207,6 +210,40 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         @Override
         public void onCompletion(MediaPlayer mp) {
             Toast.makeText(SystemVideoPlayer.this, "播放完成", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private class MyOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+        /**
+         * 手指滑动，引起seekbar进度变化，回调
+         * @param seekBar
+         * @param progress
+         * @param fromUser 用户引起 为 true 不是用户引起 false
+         */
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser){
+                //实现视频拖动
+                mVideoView.seekTo(progress);
+            }
+        }
+
+        /**
+         * 手指触碰的时候回调
+         * @param seekBar
+         */
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        /**
+         * 手指离开的时候回调
+         * @param seekBar
+         */
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
         }
     }
 }
