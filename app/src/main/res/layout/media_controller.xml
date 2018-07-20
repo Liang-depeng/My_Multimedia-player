@@ -13,7 +13,7 @@
             android:id="@+id/video_top"
             android:gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:orientation="horizontal"
             android:background="@drawable/bg_player_status">
 

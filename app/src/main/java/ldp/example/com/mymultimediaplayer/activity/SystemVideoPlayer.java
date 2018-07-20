@@ -107,6 +107,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         }else {
             Toast.makeText(this,"无数据传输",Toast.LENGTH_LONG).show();
         }
+        setButton();
     }
 
     private void getData() {
@@ -228,6 +229,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             finish();
             // Handle clicks for btnExit
         } else if (v == btnVideoPre) {
+            playpre();
             // Handle clicks for btnVideoPre
         } else if (v == btnVideoStartPause) {
             if (mVideoView.isPlaying()){
@@ -252,6 +254,26 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         }
     }
 
+    private void playpre() {
+        if (mMediaItems!=null&&mMediaItems.size()>0){
+            position--;
+            if (position>=0){
+                MediaItem mediaItem = mMediaItems.get(position);
+                videoName.setText(mediaItem.getName());
+                mVideoView.setVideoPath(mediaItem.getData());
+
+                //设置按钮状态
+                setButton();
+            }
+        }else if (mUri!=null){
+            //设置状态按钮，此时只有一个视频
+            setButton();
+        }
+    }
+
+    /**
+     * 播放下一个
+     */
     private void playnext() {
         if (mMediaItems!=null&&mMediaItems.size()>0){
             position++;
@@ -265,7 +287,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             }
         }else if (mUri!=null){
             //设置状态按钮，此时只有一个视频
-
+            setButton();
         }
     }
 
@@ -361,7 +383,8 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private class MyOnCompletionListener implements MediaPlayer.OnCompletionListener {
         @Override
         public void onCompletion(MediaPlayer mp) {
-            Toast.makeText(SystemVideoPlayer.this, "播放完成", Toast.LENGTH_LONG).show();
+            playnext();
+            //Toast.makeText(SystemVideoPlayer.this, "播放完成", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -379,7 +402,6 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
                 mVideoView.seekTo(progress);
             }
         }
-
         /**
          * 手指触碰的时候回调
          * @param seekBar
