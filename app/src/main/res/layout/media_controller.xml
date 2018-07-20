@@ -45,7 +45,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:background="@drawable/bg_player_top_control"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -66,7 +66,7 @@
                 android:thumb="@drawable/progress_thumb"/>
             <Button
                 android:id="@+id/btn_switch_player"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_switch_selector"
                 />
@@ -84,10 +84,22 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:background="@drawable/bg_player_bottom_control"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
+
+            <SeekBar
+                android:id="@+id/seekbar_video"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:maxHeight="3dp"
+                android:minHeight="3dp"
+                android:progressDrawable="@drawable/progress_horizontal"
+                android:thumb="@drawable/progress_thumb"/>
 
             <TextView
                 android:id="@+id/tv_current_time"
@@ -96,17 +108,6 @@
                 android:layout_marginLeft="8dp"
                 android:text="0:00"
                 android:textColor="#fff"/>
-            <SeekBar
-                android:id="@+id/seekbar_video"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:maxHeight="3dp"
-                android:minHeight="3dp"
-                android:progressDrawable="@drawable/progress_horizontal"
-                android:thumb="@drawable/progress_thumb"/>
             <TextView
                 android:id="@+id/tv_duration"
                 android:layout_width="wrap_content"
@@ -118,14 +119,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:background="@drawable/bg_player_bottom_control"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_exit"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/btn_exit_selector"
@@ -133,26 +134,26 @@
             <Button
                 android:id="@+id/btn_video_pre"
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_pre_selector"/>
             <Button
                 android:id="@+id/btn_video_start_pause"
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_video_pause_selector"
                 />
             <Button
                 android:id="@+id/btn_video_next"
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_video_next_selector"/>
             <Button
                 android:id="@+id/btn_switch_video_screen"
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_switch_video_selector"/>
 

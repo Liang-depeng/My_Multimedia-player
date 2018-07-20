@@ -1,6 +1,10 @@
 package ldp.example.com.mymultimediaplayer.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +21,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
@@ -47,13 +54,14 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private Button btnVideoNext;
     private Button btnSwitchVideoScreen;
     private TimeUtils mTimeUtils;
+    private MyReceiver mMyReceiver; //监听电量变化广播
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_systemvideoplayer);
-        mTimeUtils = new TimeUtils();
+        initData();
         findViews();
 
         //准备好的监听
@@ -79,6 +87,60 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         //        * 安卓系统自带控制面板
         //        */
         // mVideoView.setMediaController(new MediaController(this));
+    }
+
+    @Override
+    protected void onDestroy() {
+        /**
+         * 释放资源的时候，先释放子类，再释放父类
+         * 取消注册电量监听
+         */
+        if (mMyReceiver!=null) {
+            unregisterReceiver(mMyReceiver);
+            mMyReceiver = null;
+        }
+
+        super.onDestroy();
+    }
+
+    private void initData() {
+        mTimeUtils = new TimeUtils();
+        mMyReceiver = new MyReceiver();
+
+        IntentFilter intentfiler = new IntentFilter();
+        intentfiler.addAction(Intent.ACTION_BATTERY_CHANGED);
+        //注册电量广播
+        registerReceiver(mMyReceiver,intentfiler);
+    }
+
+    private class MyReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int level = intent.getIntExtra("level",0);
+            setBattery(level);
+        }
+    }
+
+    /**
+     * 改变电量图片
+     * @param level 电量
+     */
+    private void setBattery(int level) {
+        if (level<=0){
+            ivBattery.setImageResource(R.drawable.ic_battery_0);
+        }else if (level>0&&level<=20){
+            ivBattery.setImageResource(R.drawable.ic_battery_10);
+        }else if (level>20&&level<=40){
+            ivBattery.setImageResource(R.drawable.ic_battery_20);
+        }else if (level>40&&level<=60){
+            ivBattery.setImageResource(R.drawable.ic_battery_40);
+        }else if (level>60&&level<=80){
+            ivBattery.setImageResource(R.drawable.ic_battery_60);
+        }else if (level>80&&level<100){
+            ivBattery.setImageResource(R.drawable.ic_battery_80);
+        }else if (level==100){
+            ivBattery.setImageResource(R.drawable.ic_battery_100);
+        }
     }
 
     /**
@@ -173,8 +235,10 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
                     int currentPosition = mVideoView.getCurrentPosition();
                     //当前进度
                     seekbarVideo.setProgress(currentPosition);
-
+                    //更新时间播放进度
                     tvCurrentTime.setText(mTimeUtils.stringForTime(currentPosition));
+                    //设置系统间
+                    ivSystemTime.setText(getSystemtime());
                     // 每秒更新一次
                     mHandler.removeMessages(PROGRESS);
                     mHandler.sendEmptyMessageDelayed(PROGRESS,1000);
@@ -182,6 +246,15 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             }
         }
     };
+
+    /**
+     * 得到系统给时间
+     * @return
+     */
+    private String getSystemtime() {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        return format.format(new Date());
+    }
 
 
     private class MyOnPreparedListener implements MediaPlayer.OnPreparedListener {
@@ -194,7 +267,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             seekbarVideo.setMax(duration);
             mHandler.sendEmptyMessage(PROGRESS);
             //视频总时长
-            tvDuration.setText(mTimeUtils.stringForTime(duration));
+            tvDuration.setText("/" + mTimeUtils.stringForTime(duration));
         }
     }
 

@@ -23,6 +23,7 @@
             android:configChanges="keyboard|screenSize|orientation">
         </activity>
         <activity android:name=".activity.SystemVideoPlayer"
+            android:screenOrientation="landscape"
             android:configChanges="orientation|keyboard|screenSize">
         </activity>
     </application>
