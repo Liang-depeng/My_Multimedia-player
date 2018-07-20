@@ -1,9 +1,11 @@
 package ldp.example.com.mymultimediaplayer.domain;
 
+import java.io.Serializable;
+
 /**
  * created by ldp at 2018/7/16
  */
-public class MediaItem {
+public class MediaItem implements Serializable{//序列化
     private String name;
 
     private long duration;

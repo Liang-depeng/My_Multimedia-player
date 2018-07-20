@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -167,8 +168,15 @@ public class VideoPager extends BasePager {
             MediaItem mediaItem = mediaItems_list.get(position);
 
             //调用自己写的播放器
+//            Intent intent = new Intent(context, SystemVideoPlayer.class);
+//            intent.setDataAndType(Uri.parse(mediaItem.getData()), "video/*");
+
+
             Intent intent = new Intent(context, SystemVideoPlayer.class);
-            intent.setDataAndType(Uri.parse(mediaItem.getData()), "video/*");
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("local_video_list",mediaItems_list);
+            intent.putExtras(bundle);
+            intent.putExtra("position",position);
             /**
              * content上下文一定要写，否则会出现空指针异常
              */

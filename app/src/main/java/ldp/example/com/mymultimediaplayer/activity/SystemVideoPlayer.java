@@ -17,15 +17,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import ldp.example.com.mymultimediaplayer.R;
+import ldp.example.com.mymultimediaplayer.domain.MediaItem;
 import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
 
 /**
@@ -55,14 +58,20 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private Button btnSwitchVideoScreen;
     private TimeUtils mTimeUtils;
     private MyReceiver mMyReceiver; //监听电量变化广播
+    private RelativeLayout mVideo_bofangqi;
+    private ArrayList<MediaItem> mMediaItems;//c传入的视频列表
+    private int position;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_systemvideoplayer);
-        initData();
         findViews();
+        //隐藏状态栏
+        mVideo_bofangqi.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        initData();
+
 
         //准备好的监听
         mVideoView.setOnPreparedListener(new MyOnPreparedListener());
@@ -77,16 +86,36 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         seekbarVideo.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener());
 
         //得到播放地址
-        mUri = getIntent().getData();
-        if (mUri != null) {
-            mVideoView.setVideoURI(mUri);
-        }
-
+        getData();
+        setData();
         //        /**
         //        * 设置控制面板
         //        * 安卓系统自带控制面板
         //        */
         // mVideoView.setMediaController(new MediaController(this));
+    }
+
+    private void setData() {
+
+        if (mMediaItems!=null&&mMediaItems.size()>0){
+            MediaItem mediaItem = mMediaItems.get(position);
+            videoName.setText(mediaItem.getName());
+            mVideoView.setVideoPath(mediaItem.getData());
+
+        }else if (mUri!=null){
+            mVideoView.setVideoURI(mUri);
+        }else {
+            Toast.makeText(this,"无数据传输",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void getData() {
+        //得到播放地址
+        mUri = getIntent().getData();
+
+        mMediaItems = (ArrayList<MediaItem>) getIntent().getSerializableExtra("local_video_list");
+        position = getIntent().getIntExtra("position", 0);
+
     }
 
     @Override
@@ -167,6 +196,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         btnVideoStartPause = (Button) findViewById(R.id.btn_video_start_pause);
         btnVideoNext = (Button) findViewById(R.id.btn_video_next);
         btnSwitchVideoScreen = (Button) findViewById(R.id.btn_switch_video_screen);
+        mVideo_bofangqi = (RelativeLayout) findViewById(R.id.video_bofangqi);
 
         btnVoice.setOnClickListener(this);
         btnSwitchPlayer.setOnClickListener(this);
@@ -195,6 +225,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         } else if (v == btnSwitchPlayer) {
             // Handle clicks for btnSwitchPlayer
         } else if (v == btnExit) {
+            finish();
             // Handle clicks for btnExit
         } else if (v == btnVideoPre) {
             // Handle clicks for btnVideoPre
@@ -214,9 +245,57 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             }
             // Handle clicks for btnVideoStartPause
         } else if (v == btnVideoNext) {
+            playnext();
             // Handle clicks for btnVideoNext
         } else if (v == btnSwitchVideoScreen) {
             // Handle clicks for btnSwitchVideoScreen
+        }
+    }
+
+    private void playnext() {
+        if (mMediaItems!=null&&mMediaItems.size()>0){
+            position++;
+            if (position<mMediaItems.size()){
+                MediaItem mediaItem = mMediaItems.get(position);
+                videoName.setText(mediaItem.getName());
+                mVideoView.setVideoPath(mediaItem.getData());
+
+                //设置按钮状态
+                setButton();
+            }
+        }else if (mUri!=null){
+            //设置状态按钮，此时只有一个视频
+
+        }
+    }
+
+    private void setButton() {
+        if (mMediaItems.size()>0&&mMediaItems!=null){
+            if (mMediaItems.size()==1){
+                btnVideoPre.setBackgroundResource(R.drawable.btn_pre_gray);
+                btnVideoPre.setEnabled(false);
+                btnVideoNext.setBackgroundResource(R.drawable.btn_next_gray);
+                btnVideoNext.setEnabled(false);
+            }else{
+                if (position==0){
+                    btnVideoPre.setBackgroundResource(R.drawable.btn_pre_gray);
+                    btnVideoPre.setEnabled(false);
+                }else if (position==mMediaItems.size()-1){
+                    btnVideoNext.setBackgroundResource(R.drawable.btn_next_gray);
+                    btnVideoNext.setEnabled(false);
+                }else {
+                    btnVideoNext.setBackgroundResource(R.drawable.btn_video_next_selector);
+                    btnVideoNext.setEnabled(true);
+                    btnVideoPre.setBackgroundResource(R.drawable.btn_pre_selector);
+                    btnVideoPre.setEnabled(true);
+                }
+
+            }
+        }else if (mUri!=null){
+            btnVideoPre.setBackgroundResource(R.drawable.btn_pre_gray);
+            btnVideoPre.setEnabled(false);
+            btnVideoNext.setBackgroundResource(R.drawable.btn_next_gray);
+            btnVideoNext.setEnabled(false);
         }
     }
 
