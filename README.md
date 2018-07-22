@@ -15,7 +15,9 @@
     
 #### 5.MediaPlayer + Videoview 初步实现简单播放器
 
-#### 6.使用 [Android Layout Finder _ Buzzing Android.html](https://github.com/Liang-depeng/My_Multimedia-player/tree/master/userutils) 根据布局文件快速代码实例化控件  下载这个文件，可在浏览器直接打开使用
+#### 6.使用 [Android Layout Finder _ Buzzing Android.html](https://github.com/Liang-depeng/My_Multimedia-player/tree/master/userutils) 根据布局文件快速代码实例化控件  
+
+       下载这个文件，可在浏览器直接打开使用
     
     
     
