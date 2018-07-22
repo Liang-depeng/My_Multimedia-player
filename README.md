@@ -14,6 +14,8 @@
 #### 4.Android M 运行时权限
     
 #### 5.MediaPlayer + Videoview 初步实现简单播放器
+
+#### 6.使用 Android Layout Finder _ Buzzing Android.html 根据布局文件快速代码实例化控件
     
     
     
