@@ -8,12 +8,14 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PersistableBundle;
 import android.speech.tts.Voice;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.style.UpdateAppearance;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -87,6 +89,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private boolean IS_VOICE = false;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
