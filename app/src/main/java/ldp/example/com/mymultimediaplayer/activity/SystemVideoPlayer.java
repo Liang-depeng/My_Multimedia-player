@@ -606,11 +606,12 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     }
 
     private void updatevoice(int progress,boolean IS_VOICE) {
-        if (progress>0){
-            IS_VOICE=false;
-        }else {
-            IS_VOICE=true;
-        }
+
+//        if (progress>0){
+//            IS_VOICE=false;
+//        }else {
+//            IS_VOICE=true;
+//        }
         if (IS_VOICE){
             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,0);
             seekbarVoice.setProgress(0);
@@ -619,6 +620,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             seekbarVoice.setProgress(progress);
             currentVoice = progress;
         }
+
 
     }
 
