@@ -33,7 +33,7 @@ public class VideoPager extends BasePager {
     private ListView local_video_list;
     private TextView local_no_video;
     private ProgressBar local_video_progressbar;
-    private ArrayList<MediaItem> mediaItems_list;//数据集合
+    private ArrayList<MediaItem> mMediaItems;//数据集合
     private VideoPagerAdapter mVideoPagerAdapter;
 
 
@@ -50,9 +50,9 @@ public class VideoPager extends BasePager {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (mediaItems_list != null && mediaItems_list.size() > 0) {
+            if (mMediaItems != null && mMediaItems.size() > 0) {
                 //有数据   + 适配器
-                mVideoPagerAdapter = new VideoPagerAdapter(context, mediaItems_list);
+                mVideoPagerAdapter = new VideoPagerAdapter(context, mMediaItems);
                 local_video_list.setAdapter(mVideoPagerAdapter);
                 //隐藏文本和progressbar
                 local_no_video.setVisibility(View.GONE);
@@ -107,7 +107,7 @@ public class VideoPager extends BasePager {
             public void run() {
                 super.run();
                 SystemClock.sleep(1000);
-                mediaItems_list = new ArrayList<>();
+                mMediaItems = new ArrayList<>();
 
                 ContentResolver resolver = context.getContentResolver();
                 Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
@@ -131,7 +131,7 @@ public class VideoPager extends BasePager {
                     while (cursor.moveToNext()) {
                         MediaItem mediaItem = new MediaItem();
 
-                        mediaItems_list.add(mediaItem);
+                        mMediaItems.add(mediaItem);
 
                         String name = cursor.getString(0);
                         mediaItem.setName(name);
@@ -165,7 +165,7 @@ public class VideoPager extends BasePager {
     public class MyOnItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            MediaItem mediaItem = mediaItems_list.get(position);
+            MediaItem mediaItem = mMediaItems.get(position);
 
             //调用自己写的播放器
 //            Intent intent = new Intent(context, SystemVideoPlayer.class);
@@ -174,7 +174,7 @@ public class VideoPager extends BasePager {
 
             Intent intent = new Intent(context, SystemVideoPlayer.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("local_video_list",mediaItems_list);
+            bundle.putSerializable("local_video_list",mMediaItems);
             intent.putExtras(bundle);
             intent.putExtra("position",position);
             /**

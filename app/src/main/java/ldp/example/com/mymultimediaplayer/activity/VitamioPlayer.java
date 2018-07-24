@@ -6,15 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -32,15 +29,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import io.vov.vitamio.MediaPlayer;
+import io.vov.vitamio.Vitamio;
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.domain.MediaItem;
 import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
-import ldp.example.com.mymultimediaplayer.view.Myvideoview;
+import ldp.example.com.mymultimediaplayer.view.VitamioVideoView;
+//
+
+
+//
+
+
 
 /**
  * created by ldp at 2018/7/18
  */
-public class SystemVideoPlayer extends Activity implements View.OnClickListener {
+public class VitamioPlayer extends Activity implements View.OnClickListener {
 
     private static final int PROGRESS = 1;
     private static final int FULL_SCREEN = 1;
@@ -48,7 +53,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private boolean SHOW;
     private static final int HIDE_MESSAGE = 2;
     private boolean IS_FULLSCREEN = false;
-    private Myvideoview mVideoView;
+    private VitamioVideoView mVideoView;
     private Uri mUri;
     private LinearLayout videoTop;
     private TextView videoName;
@@ -68,7 +73,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private Button btnSwitchVideoScreen;
     private TimeUtils mTimeUtils;
     private MyReceiver mMyReceiver; //监听电量变化广播
-    private RelativeLayout mVideo_bofangqi;
+   // private RelativeLayout mVideo_bofangqi;
     private ArrayList<MediaItem> mMediaItems;//c传入的视频列表
     private int position;
 
@@ -85,18 +90,17 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
 
 
 
-
-
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_systemvideoplayer);
+        Vitamio.isInitialized(this);
+        setContentView(R.layout.activity_vitamio_videoplayer);
         findViews();
-        //隐藏状态栏
-        mVideo_bofangqi.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-        initData();
 
+        //隐藏状态栏
+       // mVideo_bofangqi.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+        initData();
 
         //准备好的监听
         mVideoView.setOnPreparedListener(new MyOnPreparedListener());
@@ -304,7 +308,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
      * (http://www.buzzingandroid.com/tools/android-layout-finder)
      */
     private void findViews() {
-        mVideoView = (Myvideoview) findViewById(R.id.video_view);
+        mVideoView = (VitamioVideoView) findViewById(R.id.vitamio_video_view);
         videoTop = (LinearLayout) findViewById(R.id.video_top);
         videoName = (TextView) findViewById(R.id.video_name);
         ivBattery = (ImageView) findViewById(R.id.iv_battery);
@@ -321,7 +325,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         btnVideoStartPause = (Button) findViewById(R.id.btn_video_start_pause);
         btnVideoNext = (Button) findViewById(R.id.btn_video_next);
         btnSwitchVideoScreen = (Button) findViewById(R.id.btn_switch_video_screen);
-        mVideo_bofangqi = (RelativeLayout) findViewById(R.id.video_bofangqi);
+        //mVideo_bofangqi = (RelativeLayout) findViewById(R.id.video_bofangqi);
         mMedia_controller = (RelativeLayout) findViewById(R.id.media_controller_layout);
 
         btnVoice.setOnClickListener(this);
@@ -484,7 +488,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             switch (msg.what) {
                 case PROGRESS:
                     //得到当前视频播放进程
-                    int currentPosition = mVideoView.getCurrentPosition();
+                    int currentPosition = (int) mVideoView.getCurrentPosition();
                     //当前进度
                     seekbarVideo.setProgress(currentPosition);
                     //更新时间播放进度
@@ -513,7 +517,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     }
 
 
-    private class MyOnPreparedListener implements MediaPlayer.OnPreparedListener {
+    private class MyOnPreparedListener implements io.vov.vitamio.MediaPlayer.OnPreparedListener {
         //当底层解码准备好的时候 开始播放
         @Override
         public void onPrepared(MediaPlayer mp) {
@@ -521,7 +525,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             videoheight = mp.getVideoHeight();
             mVideoView.start();
             //得到视频总时长
-            int duration = mVideoView.getDuration();
+            int duration = (int) mVideoView.getDuration();
             seekbarVideo.setMax(duration);
             mHandler.sendEmptyMessage(PROGRESS);
             //视频总时长
@@ -537,31 +541,10 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private class MyOnErrorListener implements MediaPlayer.OnErrorListener {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
-            startVitamioActivity();
-          //  Toast.makeText(SystemVideoPlayer.this, "播放失败", Toast.LENGTH_LONG).show();
+          //  Toast.makeText(VitamioPlayer.this, "播放失败", Toast.LENGTH_LONG).show();
             return true;
         }
     }
-
-    private void startVitamioActivity() {
-        if (mVideoView!=null){
-            mVideoView.stopPlayback();
-        }
-        Intent intent = new Intent(this, VitamioPlayer.class);
-       if (mMediaItems !=null&&mMediaItems.size()>0) {
-           Bundle bundle = new Bundle();
-           bundle.putSerializable("local_video_list", mMediaItems);
-           intent.putExtras(bundle);
-           intent.putExtra("position", position);
-       }else if (mUri != null){
-           intent.setData(mUri);
-       }
-       this.startActivity(intent);
-
-       this.finish();
-
-    }
-
 
     private class MyOnCompletionListener implements MediaPlayer.OnCompletionListener {
         @Override
@@ -669,6 +652,4 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         }
         return super.onKeyDown(keyCode, event);
     }
-
-
 }

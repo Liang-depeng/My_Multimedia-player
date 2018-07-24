@@ -158,6 +158,14 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_switch_video_selector"/>
 
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="vitamio"
+                android:textColor="#fff"/>
+
         </LinearLayout>
 
     </LinearLayout>
