@@ -1,7 +1,6 @@
 package ldp.example.com.mymultimediaplayer.adapter;
 
 import android.content.Context;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.List;
 
-import ldp.example.com.mymultimediaplayer.Pager.VideoPager;
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.domain.MediaItem;
 import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
@@ -39,6 +35,7 @@ public class VideoPagerAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         return videoPagerData_list == null ? 0 : videoPagerData_list.size();
+
     }
 
     @Override

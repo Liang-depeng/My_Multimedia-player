@@ -1,8 +1,10 @@
 package ldp.example.com.mymultimediaplayer.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -355,6 +357,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             updatevoice(currentVoice,IS_VOICE);
             // Handle clicks for btnVoice
         } else if (v == btnSwitchPlayer) {
+            showerrorvideodialoag();
             // Handle clicks for btnSwitchPlayer
         } else if (v == btnExit) {
             finish();
@@ -373,10 +376,21 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             // Handle clicks for btnSwitchVideoScreen
         }
 
-
-
     }
 
+    private void showerrorvideodialoag() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("当视频播放质量不佳或出现错误，请切换万能播放器播放");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startVitamioActivity();
+            }
+        });
+        builder.setNegativeButton("取消",null);
+        builder.show();
+    }
     private void startandpause() {
         if (mVideoView.isPlaying()) {
             /**
