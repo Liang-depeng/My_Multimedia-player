@@ -16,6 +16,8 @@ import ldp.example.com.mymultimediaplayer.domain.Internet_MediaItem;
 
 /**
  * created by ldp at 2018/7/24
+ *
+ * InternetVideoPagerAdapter
  */
 public class InternetVideoPagerAdapter extends BaseAdapter {
 
