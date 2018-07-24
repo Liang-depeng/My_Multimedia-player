@@ -21,13 +21,10 @@
             android:layout_marginLeft="5dp"/>
 
         <ImageView
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:src="@drawable/center_collect_play"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/center_collect_play" />
 
     </RelativeLayout>
 
