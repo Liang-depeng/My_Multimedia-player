@@ -17,6 +17,12 @@
 
 #### 6.使用 [Android Layout Finder _ Buzzing Android.html](https://github.com/Liang-depeng/My_Multimedia-player/tree/master/userutils) 根据布局文件快速代码实例化控件  
 
+#### 7.自定义控件 titlebar  videoview 等还在完善
+
+#### 8.集成vitamio万能解码框架
+
+        当系统播放器不能解码当前视频的时候，调用万能播放器
+
        下载这个文件，可在浏览器直接打开使用
     
     
