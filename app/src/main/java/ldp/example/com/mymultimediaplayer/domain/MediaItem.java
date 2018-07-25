@@ -16,6 +16,12 @@ public class MediaItem implements Serializable{//序列化
 
     private  String artist;
 
+    private String mImagineUrl;
+
+    private String mHeigthUrl;
+
+    private String videoTitle;
+
 
     @Override
     public String toString() {
@@ -25,7 +31,34 @@ public class MediaItem implements Serializable{//序列化
                 ", size=" + size +
                 ", data='" + data + '\'' +
                 ", artist='" + artist + '\'' +
+                ", mImagineUrl='" + mImagineUrl + '\'' +
+                ", mHeigthUrl='" + mHeigthUrl + '\'' +
+                ", videoTitle='" + videoTitle + '\'' +
                 '}';
+    }
+
+    public String getImagineUrl() {
+        return mImagineUrl;
+    }
+
+    public void setImagineUrl(String imagineUrl) {
+        mImagineUrl = imagineUrl;
+    }
+
+    public String getHeigthUrl() {
+        return mHeigthUrl;
+    }
+
+    public void setHeigthUrl(String heigthUrl) {
+        mHeigthUrl = heigthUrl;
+    }
+
+    public String getVideoTitle() {
+        return videoTitle;
+    }
+
+    public void setVideoTitle(String videoTitle) {
+        this.videoTitle = videoTitle;
     }
 
     public String getName() {

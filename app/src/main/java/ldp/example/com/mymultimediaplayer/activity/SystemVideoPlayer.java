@@ -85,6 +85,8 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private int voiceMax;//0-15
     private boolean IS_VOICE = false;
 
+    private boolean isNetUri;
+
 
 
 
@@ -126,10 +128,14 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         if (mMediaItems != null && mMediaItems.size() > 0) {
             MediaItem mediaItem = mMediaItems.get(position);
             videoName.setText(mediaItem.getName());
+            isNetUri = mTimeUtils.isNetUri(mediaItem.getData());
             mVideoView.setVideoPath(mediaItem.getData());
 
         } else if (mUri != null) {
+            videoName.setText(mUri.toString());
+            isNetUri=mTimeUtils.isNetUri(mUri.toString());
             mVideoView.setVideoURI(mUri);
+
         } else {
             Toast.makeText(this, "无数据传输", Toast.LENGTH_LONG).show();
         }
@@ -413,6 +419,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             if (position >= 0) {
                 MediaItem mediaItem = mMediaItems.get(position);
                 videoName.setText(mediaItem.getName());
+                isNetUri = mTimeUtils.isNetUri(mediaItem.getData());
                 mVideoView.setVideoPath(mediaItem.getData());
 
                 //设置按钮状态
@@ -433,6 +440,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             if (position < mMediaItems.size()) {
                 MediaItem mediaItem = mMediaItems.get(position);
                 videoName.setText(mediaItem.getName());
+                isNetUri = mTimeUtils.isNetUri(mediaItem.getData());
                 mVideoView.setVideoPath(mediaItem.getData());
 
                 //设置按钮状态
@@ -505,6 +513,15 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
                     tvCurrentTime.setText(mTimeUtils.stringForTime(currentPosition));
                     //设置系统间
                     ivSystemTime.setText(getSystemtime());
+                    //网络资源缓存进度更新
+                    if (isNetUri){
+                        int bufferPercentage = mVideoView.getBufferPercentage();
+                        int totalbuffer = bufferPercentage*seekbarVideo.getMax();
+                        int setSecondaryProgress = totalbuffer/100;
+                        seekbarVideo.setSecondaryProgress(setSecondaryProgress);
+                    }else{
+                        seekbarVideo.setSecondaryProgress(0);
+                    }
                     // 每秒更新一次
                     mHandler.removeMessages(PROGRESS);
                     mHandler.sendEmptyMessageDelayed(PROGRESS, 1000);

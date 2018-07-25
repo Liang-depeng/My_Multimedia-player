@@ -12,7 +12,7 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 import ldp.example.com.mymultimediaplayer.R;
-import ldp.example.com.mymultimediaplayer.domain.Internet_MediaItem;
+import ldp.example.com.mymultimediaplayer.domain.MediaItem;
 
 /**
  * created by ldp at 2018/7/24
@@ -22,9 +22,9 @@ import ldp.example.com.mymultimediaplayer.domain.Internet_MediaItem;
 public class InternetVideoPagerAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<Internet_MediaItem> internet_mediaItems;
+    private ArrayList<MediaItem> internet_mediaItems;
 
-    public InternetVideoPagerAdapter(Context context, ArrayList<Internet_MediaItem> list) {
+    public InternetVideoPagerAdapter(Context context, ArrayList<MediaItem> list) {
         this.context = context;
         this.internet_mediaItems = list;
     }
