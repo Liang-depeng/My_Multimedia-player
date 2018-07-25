@@ -62,6 +62,9 @@ public class InternetVideoPagerAdapter extends BaseAdapter {
 
         viewHolder.internet_video_title.setText(internet_mediaItems.get(position).getName());
         viewHolder.internet_video_report.setText(internet_mediaItems.get(position).getVideoTitle());
+        /**
+         * xutils 请求网络图片
+         */
         x.image().bind(viewHolder.internet_video_pic,internet_mediaItems.get(position).getImagineUrl());
         return convertView;
     }

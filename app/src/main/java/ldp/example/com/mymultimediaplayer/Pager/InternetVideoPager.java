@@ -3,6 +3,7 @@ package ldp.example.com.mymultimediaplayer.Pager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
@@ -27,6 +28,7 @@ import ldp.example.com.mymultimediaplayer.adapter.InternetVideoPagerAdapter;
 import ldp.example.com.mymultimediaplayer.base.BasePager;
 import ldp.example.com.mymultimediaplayer.domain.MediaItem;
 import ldp.example.com.mymultimediaplayer.me.maxwin.view.XListView;
+import ldp.example.com.mymultimediaplayer.utils.Cache;
 import ldp.example.com.mymultimediaplayer.utils.Constants;
 import ldp.example.com.mymultimediaplayer.utils.LogUtil;
 
@@ -78,6 +80,10 @@ public class InternetVideoPager extends BasePager {
     public void initData() {
         super.initData();
         LogUtil.e("网络视频页面data初始化");
+        String saveJsonData = Cache.getString(context,"Cache_data");
+        if (!TextUtils.isEmpty(saveJsonData)){
+            parseJson(saveJsonData);
+        }
         getDataFromInternet();
     }
 
@@ -88,10 +94,12 @@ public class InternetVideoPager extends BasePager {
             public void onSuccess(String result) {
                 LogUtil.e("联网 OJBK " + result);
                 progressData(result);
+                Cache.putString(context,"Cache_data",result);
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
+                showdata();
                 LogUtil.e("联网 NO OK " + ex.getMessage());
             }
 
@@ -112,6 +120,10 @@ public class InternetVideoPager extends BasePager {
         mMediaItems = parseJson(json);
 
         //适配器
+        showdata();
+    }
+
+    private void showdata() {
         if (mMediaItems != null && mMediaItems.size() > 0) {
             mInternetVideoPagerAdapter = new InternetVideoPagerAdapter(context, mMediaItems);
             mListView.setAdapter(mInternetVideoPagerAdapter);
@@ -176,7 +188,7 @@ public class InternetVideoPager extends BasePager {
             Bundle bundle = new Bundle();
             bundle.putSerializable("local_video_list",mMediaItems);
             intent.putExtras(bundle);
-            intent.putExtra("position",position);
+            intent.putExtra("position",position-1);
             /**
              * content上下文一定要写，否则会出现空指针异常
              */
@@ -191,7 +203,7 @@ public class InternetVideoPager extends BasePager {
         @Override
         public void onRefresh() {
             getDataFromInternet();
-
+            onLoad();
         }
 
         @Override
