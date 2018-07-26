@@ -1,4 +1,4 @@
-package ldp.example.com.mymultimediaplayer.Pager;
+package ldp.example.com.mymultimediaplayer.pager;
 
 import android.content.Context;
 import android.content.Intent;

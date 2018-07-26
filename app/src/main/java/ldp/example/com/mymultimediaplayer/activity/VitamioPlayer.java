@@ -58,6 +58,7 @@ public class VitamioPlayer extends Activity implements View.OnClickListener {
     private VitamioVideoView mVideoView;
     private Uri mUri;
     private LinearLayout videoTop;
+    private TextView mPlayer;
     private TextView videoName;
     private ImageView ivBattery;
     private TextView ivSystemTime;
@@ -329,6 +330,8 @@ public class VitamioPlayer extends Activity implements View.OnClickListener {
         btnSwitchVideoScreen = (Button) findViewById(R.id.btn_switch_video_screen);
         //mVideo_bofangqi = (RelativeLayout) findViewById(R.id.video_bofangqi);
         mMedia_controller = (RelativeLayout) findViewById(R.id.media_controller_layout);
+        mPlayer = (TextView) findViewById(R.id.player);
+        mPlayer.setText("万能播放器");
 
         btnVoice.setOnClickListener(this);
         btnSwitchPlayer.setOnClickListener(this);
@@ -531,6 +534,7 @@ public class VitamioPlayer extends Activity implements View.OnClickListener {
             int duration = (int) mVideoView.getDuration();
             seekbarVideo.setMax(duration);
             mHandler.sendEmptyMessage(PROGRESS);
+            mHandler.sendEmptyMessageDelayed(HIDE_MESSAGE,4000);
             //视频总时长
             tvDuration.setText("/" + mTimeUtils.stringForTime(duration));
 //            hideMediacontrollerLayout();//解决切换视频切换一个就会隐藏控制面板的小bug

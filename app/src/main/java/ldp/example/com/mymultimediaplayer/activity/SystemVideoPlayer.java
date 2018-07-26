@@ -86,9 +86,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private boolean IS_VOICE = false;
 
     private boolean isNetUri;
-
-
-
+    private TextView mPlayer;
 
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
@@ -331,6 +329,8 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         btnSwitchVideoScreen = (Button) findViewById(R.id.btn_switch_video_screen);
         mVideo_bofangqi = (RelativeLayout) findViewById(R.id.video_bofangqi);
         mMedia_controller = (RelativeLayout) findViewById(R.id.media_controller_layout);
+        mPlayer = (TextView) findViewById(R.id.player);
+        mPlayer.setText("系统播放器");
 
         btnVoice.setOnClickListener(this);
         btnSwitchPlayer.setOnClickListener(this);
@@ -339,6 +339,9 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
         btnVideoStartPause.setOnClickListener(this);
         btnVideoNext.setOnClickListener(this);
         btnSwitchVideoScreen.setOnClickListener(this);
+
+
+
     }
 
     @Override
@@ -555,6 +558,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             int duration = mVideoView.getDuration();
             seekbarVideo.setMax(duration);
             mHandler.sendEmptyMessage(PROGRESS);
+            mHandler.sendEmptyMessageDelayed(HIDE_MESSAGE,4000);
             //视频总时长
             tvDuration.setText("/" + mTimeUtils.stringForTime(duration));
 //            hideMediacontrollerLayout();//解决切换视频切换一个就会隐藏控制面板的小bug

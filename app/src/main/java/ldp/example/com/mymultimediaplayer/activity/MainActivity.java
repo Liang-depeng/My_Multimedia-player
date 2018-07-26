@@ -1,20 +1,13 @@
 package ldp.example.com.mymultimediaplayer.activity;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -27,15 +20,15 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import ldp.example.com.mymultimediaplayer.Pager.InternetMusicPager;
-import ldp.example.com.mymultimediaplayer.Pager.InternetVideoPager;
-import ldp.example.com.mymultimediaplayer.Pager.MusicPager;
-import ldp.example.com.mymultimediaplayer.Pager.VideoPager;
+
+import ldp.example.com.mymultimediaplayer.pager.InternetMusicPager;
+import ldp.example.com.mymultimediaplayer.pager.InternetVideoPager;
+import ldp.example.com.mymultimediaplayer.pager.MusicPager;
+import ldp.example.com.mymultimediaplayer.pager.VideoPager;
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.base.BasePager;
-import ldp.example.com.mymultimediaplayer.utils.BaseActivity;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends FragmentActivity {
 
     private FrameLayout flame_content;
     private RadioGroup rg_tab;
@@ -55,12 +48,12 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cehua_layout);
 
-        /**
-         * 运行时权限
-         * 进去获取需要的权限
-         * 之前放在加载页面之前，老是崩掉...
-         */
-        isGrantExternalRW(MainActivity.this);
+//        /**
+//         * 运行时权限
+//         * 进去获取需要的权限
+//         * 之前放在加载页面之前，老是崩掉...
+//         */
+//        isGrantExternalRW((Activity) MainActivity.this);
 
 
         flame_content = (FrameLayout) findViewById(R.id.flame_content); //主页面布局
@@ -233,16 +226,16 @@ public class MainActivity extends BaseActivity {
 //        }
 //    }
 
-
-    public static boolean isGrantExternalRW(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            activity.requestPermissions(new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-            }, 1);
-            return false;
-        }
-        return true;
-    }
+//
+//    public static boolean isGrantExternalRW(Activity activity) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+//            activity.requestPermissions(new String[]{
+//                    Manifest.permission.READ_EXTERNAL_STORAGE,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            }, 1);
+//            return false;
+//        }
+//        return true;
+//    }
 }

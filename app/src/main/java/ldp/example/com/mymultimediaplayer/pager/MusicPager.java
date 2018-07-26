@@ -1,11 +1,16 @@
-package ldp.example.com.mymultimediaplayer.Pager;
+package ldp.example.com.mymultimediaplayer.pager;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -15,11 +20,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import ldp.example.com.mymultimediaplayer.R;
+import ldp.example.com.mymultimediaplayer.activity.LocalMusicPlayerActivity;
 import ldp.example.com.mymultimediaplayer.adapter.MusicPagerAdapter;
 import ldp.example.com.mymultimediaplayer.base.BasePager;
 import ldp.example.com.mymultimediaplayer.domain.MusicItem;
@@ -82,7 +87,7 @@ public class MusicPager extends BasePager {
     public void initData() {
         super.initData();
         LogUtil.e("本地音乐页面data初始化");
-
+        isGrantExternalRW((Activity)context);
         getMusicDataFromLocal();
     }
 
@@ -156,7 +161,10 @@ public class MusicPager extends BasePager {
     private class MyMusicOnItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(context, "我是第" + position + "条", Toast.LENGTH_LONG).show();
+           //Toast.makeText(context, "我是第" + position + "条", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(context, LocalMusicPlayerActivity.class);
+           // intent.putExtra("position",position);
+            context.startActivity(intent);
         }
     }
 
@@ -183,5 +191,17 @@ public class MusicPager extends BasePager {
             bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_test);
         }
         return bm;
+    }
+
+    public static boolean isGrantExternalRW(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            activity.requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, 1);
+            return false;
+        }
+        return true;
     }
 }
