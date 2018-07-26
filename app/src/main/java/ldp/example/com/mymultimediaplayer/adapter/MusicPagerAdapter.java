@@ -52,7 +52,7 @@ public class MusicPagerAdapter extends BaseAdapter {
             viewHolder.ic_video_pic = (ImageView) convertView.findViewById(R.id.ic_music_pic);
             viewHolder.local_music_name = (TextView) convertView.findViewById(R.id.local_music_name);
             viewHolder.local_video_singer = (TextView) convertView.findViewById(R.id.local_video_singer);
-
+            viewHolder.local_music_size=(TextView)convertView.findViewById(R.id.local_music_size);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -60,7 +60,8 @@ public class MusicPagerAdapter extends BaseAdapter {
 
         viewHolder.local_music_name.setText(mMusicItems.get(position).getName());
         viewHolder.local_video_singer.setText(mMusicItems.get(position).getSingerName());
-
+        viewHolder.ic_video_pic.setImageBitmap(mMusicItems.get(position).getMusic_pic());
+        viewHolder.local_music_size.setText(android.text.format.Formatter.formatFileSize(mContext,mMusicItems.get(position).getMusicsize()));
         return convertView;
     }
 
@@ -69,6 +70,7 @@ public class MusicPagerAdapter extends BaseAdapter {
         private ImageView ic_video_pic;
         private TextView local_music_name;
         private TextView local_video_singer;
+        private TextView local_music_size;
 
     }
 }

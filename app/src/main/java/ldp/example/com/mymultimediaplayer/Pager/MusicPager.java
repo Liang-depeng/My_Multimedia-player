@@ -3,6 +3,8 @@ package ldp.example.com.mymultimediaplayer.Pager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -35,17 +37,17 @@ public class MusicPager extends BasePager {
     private ArrayList<MusicItem> mMusicItems;
     private MusicPagerAdapter mMusicPagerAdapter;
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (mMusicItems!=null&&mMusicItems.size()>0){
+            if (mMusicItems != null && mMusicItems.size() > 0) {
                 //有数据绑定适配器 隐藏文本
-                mMusicPagerAdapter = new MusicPagerAdapter(context,mMusicItems);
+                mMusicPagerAdapter = new MusicPagerAdapter(context, mMusicItems);
                 mLocal_music_list.setAdapter(mMusicPagerAdapter);
 
                 mLocal_no_music.setVisibility(View.GONE);
-            }else {
+            } else {
                 //无数据 显示文本
                 mLocal_no_music.setVisibility(View.VISIBLE);
             }
@@ -105,12 +107,16 @@ public class MusicPager extends BasePager {
                         //视频绝对地址
                         MediaStore.Audio.Media.DATA,
                         //艺术家名称
-                        MediaStore.Audio.Media.ARTIST
+                        MediaStore.Audio.Media.ARTIST,
+                        //唱片
+                        MediaStore.Audio.Media.ALBUM,
+                        //唱片ID
+                        MediaStore.Audio.Media.ALBUM_ID
                 };
 
                 Cursor cursor = resolver.query(uri, objs, null, null, null);
-                if (cursor!=null){
-                    while (cursor.moveToNext()){
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
                         MusicItem musicItem = new MusicItem();
 
                         mMusicItems.add(musicItem);
@@ -129,6 +135,14 @@ public class MusicPager extends BasePager {
 
                         String artist = cursor.getString(4);
                         musicItem.setSingerName(artist);
+
+                        String album = cursor.getString(5);
+                        musicItem.setAlbum(album);
+
+                        int abbum_id = cursor.getInt(6);
+                        musicItem.setAlbum_id(abbum_id);
+
+                        musicItem.setMusic_pic(getAlbumArt(abbum_id));
                     }
                     cursor.close();
                 }
@@ -142,7 +156,32 @@ public class MusicPager extends BasePager {
     private class MyMusicOnItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(context,"我是第"+position+"条",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "我是第" + position + "条", Toast.LENGTH_LONG).show();
         }
+    }
+
+    /**
+     * 根据专辑ID获取专辑封面图
+     * 来源：https://blog.csdn.net/jasper_success/article/details/78832286
+     * @param album_id 专辑ID
+     * @return
+     */
+    private Bitmap getAlbumArt(int album_id) {
+        String mUriAlbums = "content://media/external/audio/albums";
+        String[] projection = new String[]{"album_art"};
+        Cursor cur = context.getContentResolver().query(Uri.parse(mUriAlbums + "/" + Integer.toString(album_id)), projection, null, null, null);
+        String album_art = null;
+        if (cur.getCount() > 0 && cur.getColumnCount() > 0) {
+            cur.moveToNext();
+            album_art = cur.getString(0);
+        }
+        cur.close();
+        Bitmap bm = null;
+        if (album_art != null) {
+            bm = BitmapFactory.decodeFile(album_art);
+        } else {
+            bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_test);
+        }
+        return bm;
     }
 }

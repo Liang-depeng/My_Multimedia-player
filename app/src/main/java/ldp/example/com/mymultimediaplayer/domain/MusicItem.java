@@ -1,5 +1,7 @@
 package ldp.example.com.mymultimediaplayer.domain;
 
+import android.graphics.Bitmap;
+
 /**
  * created by ldp at 2018/7/25
  */
@@ -15,6 +17,13 @@ public class MusicItem {
 
     private String singerName;
 
+    private String album;
+
+    private int album_id;
+
+    private Bitmap music_pic;
+
+
     @Override
     public String toString() {
         return "MusicItem{" +
@@ -23,7 +32,33 @@ public class MusicItem {
                 ", musicsize=" + musicsize +
                 ", data_music='" + data_music + '\'' +
                 ", singerName='" + singerName + '\'' +
+                ", album='" + album + '\'' +
+                ", album_id=" + album_id +
                 '}';
+    }
+
+    public Bitmap getMusic_pic() {
+        return music_pic;
+    }
+
+    public void setMusic_pic(Bitmap music_pic) {
+        this.music_pic = music_pic;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public int getAlbum_id() {
+        return album_id;
+    }
+
+    public void setAlbum_id(int album_id) {
+        this.album_id = album_id;
     }
 
     public String getName() {
