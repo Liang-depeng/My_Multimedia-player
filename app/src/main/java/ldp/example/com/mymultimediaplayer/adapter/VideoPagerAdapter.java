@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import ldp.example.com.mymultimediaplayer.R;
@@ -72,6 +74,13 @@ public class VideoPagerAdapter extends BaseAdapter {
         viewHolder.local_video_time1.setText(mTimeUtils.stringForTime((int) videoPagerData_list.get(position).getDuration()));
         viewHolder.local_video_size1.setText(android.text.format.Formatter.
                 formatFileSize(mContext, videoPagerData_list.get(position).getSize()));
+
+//        viewHolder.ic_video_pic1.setImageBitmap(videoPagerData_list.get(position).getFirstFramePic());
+        Glide.with(mContext)
+                .load(videoPagerData_list.get(position).getData())
+                .placeholder(R.drawable.ic_videos)
+                .error(R.drawable.ic_test)
+                .into(viewHolder.ic_video_pic1);
         return convertView;
     }
 

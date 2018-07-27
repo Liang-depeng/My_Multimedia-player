@@ -153,6 +153,7 @@ public class VideoPager extends BasePager {
                         String artist = cursor.getString(4);
                         mediaItem.setArtist(artist);
 
+                     //   mediaItem.setFirstFramePic(getFirstFramePic(data));
                     }
                     cursor.close();
                 }
@@ -206,4 +207,19 @@ public class VideoPager extends BasePager {
         }
         return true;
     }
+
+//    public Bitmap getFirstFramePic(String path){
+//        //创建MediaMetadataRetriever对象
+//        MediaMetadataRetriever mmr=new MediaMetadataRetriever();
+////        //设置资源位置
+////        String path="/storage/sdcard1"+"/Movies"+"/XiaomiPhone.mp4";
+//        //绑定资源
+//        mmr.setDataSource(path);
+//        //获取第一帧图像的bitmap对象
+//        Bitmap bitmap=mmr.getFrameAtTime();
+//        //加载到ImageView控件上
+////        img.setImageBitmap(bitmap);
+//        mmr.release();
+//        return bitmap;
+//    }
 }

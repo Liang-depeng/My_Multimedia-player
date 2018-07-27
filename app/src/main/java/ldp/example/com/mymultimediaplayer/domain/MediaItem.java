@@ -1,5 +1,7 @@
 package ldp.example.com.mymultimediaplayer.domain;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 /**
@@ -22,6 +24,8 @@ public class MediaItem implements Serializable{//序列化
 
     private String videoTitle;
 
+    private Bitmap FirstFramePic;
+
 
     @Override
     public String toString() {
@@ -35,6 +39,14 @@ public class MediaItem implements Serializable{//序列化
                 ", mHeigthUrl='" + mHeigthUrl + '\'' +
                 ", videoTitle='" + videoTitle + '\'' +
                 '}';
+    }
+
+    public Bitmap getFirstFramePic() {
+        return FirstFramePic;
+    }
+
+    public void setFirstFramePic(Bitmap firstFramePic) {
+        FirstFramePic = firstFramePic;
     }
 
     public String getImagineUrl() {
