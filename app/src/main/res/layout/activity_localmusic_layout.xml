@@ -7,6 +7,7 @@
 
     
     <RelativeLayout
+        android:id="@+id/music_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         
@@ -34,4 +35,82 @@
             android:layout_marginTop="130dp"
             />
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_margin="5dp">
+
+            <SeekBar
+                android:id="@+id/seekbar_musicplayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="5dp"/>
+
+            <TextView
+                android:id="@+id/music_playing_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5:00"/>
+            <TextView
+                android:id="@+id/music_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="/10:00"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:id="@+id/music_switch_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_musicplayer_switch1"/>
+            <ImageView
+                android:id="@+id/music_player_pre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_weight="2"
+                android:src="@drawable/ic_musicplayer_pre"/>
+
+            <ImageView
+                android:id="@+id/music_player_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_weight="3"
+                android:src="@drawable/ic_musicplayer_starting" />
+            <ImageView
+                android:id="@+id/music_player_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_weight="2"
+                android:src="@drawable/ic_musicplayer_next"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_weight="2"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
 </RelativeLayout>
