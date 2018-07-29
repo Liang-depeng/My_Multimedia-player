@@ -19,6 +19,7 @@
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"/>
         <TextView
+            android:id="@+id/song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="庐州月光"
@@ -27,6 +28,7 @@
             android:layout_marginTop="100dp"
             android:textSize="20dp"/>
         <TextView
+            android:id="@+id/singer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="10dp"
@@ -96,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="3"
-                android:src="@drawable/ic_musicplayer_starting" />
+                android:src="@drawable/ic_musicplayer_pauseing" />
             <ImageView
                 android:id="@+id/music_player_next"
                 android:layout_width="wrap_content"

@@ -58,6 +58,8 @@ interface IMyMusicPlayerAidlInterface {
 
                 int getPlayMode ();
 
+                boolean isPlaying();
+
                 }
 
 

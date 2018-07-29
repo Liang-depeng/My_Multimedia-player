@@ -23,6 +23,7 @@ import ldp.example.com.mymultimediaplayer.domain.MusicItem;
  */
 public class MymusicPlayerService extends Service {
 
+    public static final String MUSIC_START = "ldp.com.example.mymultimediaplayer.MUSIC_START";
     private ArrayList<MusicItem> mMusicItems;
     private int position;
     private MusicItem musicItem;
@@ -164,6 +165,11 @@ public class MymusicPlayerService extends Service {
         public int getPlayMode() throws RemoteException {
             return service.getPlayMode();
         }
+
+        @Override
+        public boolean isPlaying() throws RemoteException {
+            return service.isPlaying();
+        }
     };
 
     @Nullable
@@ -239,11 +245,11 @@ public class MymusicPlayerService extends Service {
     }
 
     private String getMusicPlayer() {
-        return "";
+        return musicItem.getSingerName();
     }
 
     private String getMusicName() {
-        return "";
+        return musicItem.getName();
     }
 
     private String getMusicPath() {
@@ -270,12 +276,24 @@ public class MymusicPlayerService extends Service {
         return 0;
     }
 
+    public boolean isPlaying(){
+        return mMediaPlayer.isPlaying();
+    }
+
 
     private class MyOnPreparedListener2 implements MediaPlayer.OnPreparedListener {
         @Override
         public void onPrepared(MediaPlayer mp) {
+            //通知activity获取信息（广播）
+            notifyChange(MUSIC_START);
             start();
         }
+    }
+
+    private void notifyChange(String action) {
+        Intent intent = new Intent(action);
+        sendBroadcast(intent);
+
     }
 
     private class MyOnCompletionListener2 implements MediaPlayer.OnCompletionListener {
