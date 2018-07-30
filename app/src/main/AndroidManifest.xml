@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ldp.example.com.mymultimediaplayer">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -70,7 +71,7 @@
             android:screenOrientation="landscape"
             android:configChanges="orientation|keyboard|screenSize"
             android:theme="@style/noAnimation_Theme" />
-        <activity android:name=".activity.LocalMusicPlayerActivity"/>
+        <activity android:name=".activity.LocalMusicPlayerActivity" android:launchMode="singleTask"/>
         <service android:name=".service.MymusicPlayerService">
             <intent-filter>
                 <action android:name="ldp.com.mymultimediaplayer.OPEN_MUSIC"/>

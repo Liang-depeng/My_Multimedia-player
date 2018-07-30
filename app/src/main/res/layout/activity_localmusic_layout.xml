@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="3"
-                android:src="@drawable/ic_musicplayer_pauseing" />
+                android:src="@drawable/ic_musicplayer_starting" />
             <ImageView
                 android:id="@+id/music_player_next"
                 android:layout_width="wrap_content"

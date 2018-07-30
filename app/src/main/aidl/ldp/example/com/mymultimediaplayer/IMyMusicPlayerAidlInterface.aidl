@@ -60,6 +60,8 @@ interface IMyMusicPlayerAidlInterface {
 
                 boolean isPlaying();
 
+                void seekTo(int position);
+
                 }
 
 

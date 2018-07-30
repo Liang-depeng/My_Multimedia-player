@@ -1,14 +1,19 @@
 package ldp.example.com.mymultimediaplayer.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -16,7 +21,10 @@ import java.util.ArrayList;
 
 import io.vov.vitamio.MediaPlayer;
 import ldp.example.com.mymultimediaplayer.IMyMusicPlayerAidlInterface;
+import ldp.example.com.mymultimediaplayer.R;
+import ldp.example.com.mymultimediaplayer.activity.LocalMusicPlayerActivity;
 import ldp.example.com.mymultimediaplayer.domain.MusicItem;
+import ldp.example.com.mymultimediaplayer.utils.Cache;
 
 /**
  * created by ldp at 2018/7/27
@@ -29,9 +37,15 @@ public class MymusicPlayerService extends Service {
     private MusicItem musicItem;
     private MediaPlayer mMediaPlayer;
 
+    public static final  int PLAY_NORMAL = 1;
+    public  static final  int PLAY_SINFLE = 2;
+    public  static final  int PLAY_ALL = 3;
+
+    private int playmode = PLAY_NORMAL;
     @Override
     public void onCreate() {
         super.onCreate();
+        playmode = Cache.getInt(this,"play_mode");
         getdatafromlocal();
     }
 
@@ -106,6 +120,7 @@ public class MymusicPlayerService extends Service {
             service.openMusic(position);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void start() throws RemoteException {
             service.start();
@@ -170,6 +185,11 @@ public class MymusicPlayerService extends Service {
         public boolean isPlaying() throws RemoteException {
             return service.isPlaying();
         }
+
+        @Override
+        public void seekTo(int position) throws RemoteException {
+            mMediaPlayer.seekTo(position);
+        }
     };
 
     @Nullable
@@ -189,7 +209,7 @@ public class MymusicPlayerService extends Service {
             musicItem = mMusicItems.get(position);
 
             if (mMediaPlayer!=null){
-                mMediaPlayer.release();
+//                mMediaPlayer.release();
                 mMediaPlayer.reset();
             }
 
@@ -202,19 +222,42 @@ public class MymusicPlayerService extends Service {
 
                 mMediaPlayer.setDataSource(musicItem.getData_music());
                 mMediaPlayer.prepareAsync();
+
+                if (playmode==PLAY_SINFLE){
+                    mMediaPlayer.setLooping(true);
+                }else {
+                    mMediaPlayer.setLooping(false);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }else {
-            Toast.makeText(MymusicPlayerService.this,"",Toast.LENGTH_LONG).show();
+            Toast.makeText(MymusicPlayerService.this,"     没有数据    ",Toast.LENGTH_LONG).show();
         }
     }
 
+    private NotificationManager mManager;
     /**
      * 播放
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void start() {
+        //
         mMediaPlayer.start();
+        //当播放歌曲的时候，在状态栏显示的时候，点击进入播放界面
+        mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //
+        Intent intent = new Intent(this, LocalMusicPlayerActivity.class);
+        intent.putExtra("Notification",true);//标识来自状态栏
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,1,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_zhuangtailan)
+                .setContentTitle("ldp_music")
+                .setContentText(" "+ getMusicName())
+                .setContentIntent(pendingIntent)
+                .build();
+        mManager.notify(1,notification);
     }
 
     /**
@@ -222,6 +265,7 @@ public class MymusicPlayerService extends Service {
      */
     private void pause() {
         mMediaPlayer.pause();
+        mManager.cancel(1);
     }
 
     /**
@@ -234,14 +278,14 @@ public class MymusicPlayerService extends Service {
      * 播放进度
      */
     private int getCurrentPosition() {
-        return 0;
+        return (int) mMediaPlayer.getCurrentPosition();
     }
 
     /**
      * 时长
      */
     private int getDuration() {
-        return 0;
+        return (int) mMediaPlayer.getDuration();
     }
 
     private String getMusicPlayer() {
@@ -257,7 +301,51 @@ public class MymusicPlayerService extends Service {
     }
 
     private void next() {
+        //根据当前播放模式，设置下一个位置
+        setNextMusic();
+        //根据当前播放模式和下标播放
+        openNextMusic();
+    }
 
+    private void setNextMusic() {
+
+        int playmode = getPlayMode();
+        if (playmode==MymusicPlayerService.PLAY_NORMAL){
+            position++;
+        }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
+            position++;
+            if (position>=mMusicItems.size()){
+                position=0;
+            }
+        }else if (playmode==MymusicPlayerService.PLAY_ALL){
+            position++;
+            if (position>=mMusicItems.size()){
+                position=0;
+            }
+        }else{
+            position++;
+        }
+    }
+
+    private void openNextMusic() {
+        int playmode = getPlayMode();
+        if (playmode==MymusicPlayerService.PLAY_NORMAL){
+            if (position<mMusicItems.size()){
+                openMusic(position);
+            }else {
+                position = mMusicItems.size()-1;
+            }
+        }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
+            openMusic(position);
+        }else if (playmode==MymusicPlayerService.PLAY_ALL){
+            openMusic(position);
+        }else{
+            if (position<mMusicItems.size()){
+                openMusic(position);
+            }else {
+                position = mMusicItems.size()-1;
+            }
+        }
     }
 
     private void pre() {
@@ -268,12 +356,13 @@ public class MymusicPlayerService extends Service {
      * 播放模式
      */
     private void setPlayMode(int playMode) {
-
+        this.playmode = playMode;
+        Cache.putInt(this,"play_mode",playMode);
     }
 
     private int getPlayMode() {
 
-        return 0;
+        return playmode;
     }
 
     public boolean isPlaying(){
@@ -282,6 +371,7 @@ public class MymusicPlayerService extends Service {
 
 
     private class MyOnPreparedListener2 implements MediaPlayer.OnPreparedListener {
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onPrepared(MediaPlayer mp) {
             //通知activity获取信息（广播）

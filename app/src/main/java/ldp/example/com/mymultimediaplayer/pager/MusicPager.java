@@ -87,7 +87,7 @@ public class MusicPager extends BasePager {
     public void initData() {
         super.initData();
         LogUtil.e("本地音乐页面data初始化");
-        isGrantExternalRW((Activity)context);
+        isGrantExternalRW((Activity) context);
         getMusicDataFromLocal();
     }
 
@@ -161,9 +161,9 @@ public class MusicPager extends BasePager {
     private class MyMusicOnItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-           //Toast.makeText(context, "我是第" + position + "条", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "我是第" + position + "条", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(context, LocalMusicPlayerActivity.class);
-           // intent.putExtra("position",position);
+            intent.putExtra("position", position);
             context.startActivity(intent);
         }
     }
@@ -171,6 +171,7 @@ public class MusicPager extends BasePager {
     /**
      * 根据专辑ID获取专辑封面图
      * 来源：https://blog.csdn.net/jasper_success/article/details/78832286
+     *
      * @param album_id 专辑ID
      * @return
      */
@@ -195,7 +196,7 @@ public class MusicPager extends BasePager {
 
     public static boolean isGrantExternalRW(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             activity.requestPermissions(new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE

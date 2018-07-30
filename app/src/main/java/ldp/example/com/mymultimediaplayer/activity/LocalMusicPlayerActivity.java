@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
@@ -26,6 +27,7 @@ import org.xutils.x;
 import ldp.example.com.mymultimediaplayer.IMyMusicPlayerAidlInterface;
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.service.MymusicPlayerService;
+import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
 
 /**
  * created by ldp at 2018/7/26
@@ -50,6 +52,9 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
     private TextView mSinger;
     private TextView mSong_name;
     private MyReceiver receiver;
+    private TimeUtils mUtils;
+    private boolean notification;
+
 
 
 
@@ -63,9 +68,15 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         @Override
         public void onServiceConnected(ComponentName name, IBinder iBinder) {
             service = IMyMusicPlayerAidlInterface.Stub.asInterface(iBinder);
+
             if (service!=null){
                 try {
-                    service.openMusic(position);
+                    if (!notification){
+                        service.openMusic(position);
+                    }else {
+                        System.out.println("onServiceConnected" + Thread.currentThread().getName());
+                        showData();
+                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -109,13 +120,28 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
             super.handleMessage(msg);
             switch (msg.what){
                 case PROGRESS:
-
+                    try {
+                        //得到当前进度
+                        int currentPosition = service.getCurrentPosition();
+                        //设置seekbar.progress
+                        seekbarMusicplayer.setProgress(currentPosition);
+                        //时间进度
+                        musicPlayingTime.setText(mUtils.stringForTime(currentPosition)+"/");
+                        musicDuration.setText(mUtils.stringForTime(service.getDuration()));
+                        //每秒跟新一次
+                        mHandler.removeMessages(PROGRESS);
+                        mHandler.sendEmptyMessageDelayed(PROGRESS,1000);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }
     };
 
     private void initData() {
+        mUtils = new TimeUtils();
+        //注册广播
         MyReceiver receiver = new MyReceiver();
         IntentFilter intentFilter =new IntentFilter();
         intentFilter.addAction(MymusicPlayerService.MUSIC_START);
@@ -127,6 +153,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         @Override
         public void onReceive(Context context, Intent intent) {
             showData();
+            checkshowPlayMode();
         }
     }
 
@@ -134,7 +161,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         try {
             mSinger.setText(service.getMusicPlayer());
             mSong_name.setText(service.getMusicName());
-
+            //
             seekbarMusicplayer.setMax(service.getDuration());
 
             mHandler.sendEmptyMessage(PROGRESS);
@@ -166,11 +193,13 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         musicPlayerPre.setOnClickListener(this);
         musicPlayerPause.setOnClickListener(this);
         musicPlayerNext.setOnClickListener(this);
+
+        seekbarMusicplayer.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener2());
     }
 
     public void onClick(View v){
         if (v==musicSwitch1){
-
+            setPlayMode();
         }else if (v==musicPlayerPre){
 
         }else if (v==musicPlayerPause){
@@ -188,8 +217,79 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
                 }
             }
         }else if(v==musicPlayerNext){
-
+            if (service!=null){
+                try {
+                    service.next();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+    }
+
+    private void setPlayMode() {
+        try {
+            int playmode = service.getPlayMode();
+            if (playmode==MymusicPlayerService.PLAY_NORMAL){
+                playmode=MymusicPlayerService.PLAY_SINFLE;
+            }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
+                playmode=MymusicPlayerService.PLAY_ALL;
+            }else if (playmode==MymusicPlayerService.PLAY_ALL){
+                playmode=MymusicPlayerService.PLAY_NORMAL;
+            }else{
+                playmode=MymusicPlayerService.PLAY_NORMAL;
+            }
+
+            service.setPlayMode(playmode);
+
+            showPlayMode();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showPlayMode() {
+        try {
+            int playmode = service.getPlayMode();
+            if (playmode==MymusicPlayerService.PLAY_NORMAL){
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch1);
+                Toast.makeText(LocalMusicPlayerActivity.this,"顺序播放",Toast.LENGTH_LONG).show();
+            }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch3);
+                Toast.makeText(LocalMusicPlayerActivity.this,"单曲循环",Toast.LENGTH_LONG).show();
+            }else if (playmode==MymusicPlayerService.PLAY_ALL){
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch2);
+                Toast.makeText(LocalMusicPlayerActivity.this,"列表循环",Toast.LENGTH_LONG).show();
+            }else{
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch1);
+                Toast.makeText(LocalMusicPlayerActivity.this,"顺序播放",Toast.LENGTH_LONG).show();
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void checkshowPlayMode() {
+        try {
+            int playmode = service.getPlayMode();
+            if (playmode==MymusicPlayerService.PLAY_NORMAL){
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch1);
+
+            }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch3);
+
+            }else if (playmode==MymusicPlayerService.PLAY_ALL){
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch2);
+
+            }else{
+                musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch1);
+
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void bindMusicService() {
@@ -200,8 +300,10 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
     }
 
     private void getData() {
-        position = getIntent().getIntExtra("position", 0);
-
+        notification=getIntent().getBooleanExtra("Notification",false);
+        if (!notification) {
+            position = getIntent().getIntExtra("position", 0);
+        }
     }
 
     private void initView() {
@@ -218,10 +320,34 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
 
     @Override
     protected void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
         if (receiver!=null){
             unregisterReceiver(receiver);
             receiver=null;
         }
         super.onDestroy();
+    }
+
+    private class MyOnSeekBarChangeListener2 implements SeekBar.OnSeekBarChangeListener {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser){
+                try {
+                    service.seekTo(progress);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
     }
 }

@@ -151,6 +151,8 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
 
     @Override
     protected void onDestroy() {
+
+        mHandler.removeCallbacksAndMessages(null);
         /**
          * 释放资源的时候，先释放子类，再释放父类
          * 取消注册电量监听
