@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -21,13 +20,18 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import ldp.example.com.mymultimediaplayer.IMyMusicPlayerAidlInterface;
 import ldp.example.com.mymultimediaplayer.R;
+import ldp.example.com.mymultimediaplayer.domain.MusicItem;
 import ldp.example.com.mymultimediaplayer.service.MymusicPlayerService;
 import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
+import ldp.example.com.mymultimediaplayer.view.ShowLyricView;
 
 /**
  * created by ldp at 2018/7/26
@@ -35,6 +39,7 @@ import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
 public class LocalMusicPlayerActivity extends Activity implements View.OnClickListener {
 
     private static final int PROGRESS = 1;
+    private static final int SHOW_LYRIC = 2;
     @ViewInject(R.id.music_pic1)
     private ImageView music_pic_list01;
 
@@ -51,9 +56,11 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
     private ImageView musicPlayerNext;
     private TextView mSinger;
     private TextView mSong_name;
-    private MyReceiver receiver;
+//    private MyReceiver receiver;
     private TimeUtils mUtils;
     private boolean notification;
+
+    private ShowLyricView show_lyric;
 
 
 
@@ -135,26 +142,53 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
                         e.printStackTrace();
                     }
                     break;
+                case SHOW_LYRIC:
+                    //得到当前进度
+                    try {
+                        int currentPosition = service.getCurrentPosition();
+
+                        //传入进度至show_lyric_view
+                        show_lyric.setNextLyric(currentPosition);
+                        //实时发消息
+                        mHandler.removeMessages(SHOW_LYRIC);
+                        mHandler.sendEmptyMessage(SHOW_LYRIC);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    break;
             }
         }
     };
 
     private void initData() {
         mUtils = new TimeUtils();
-        //注册广播
-        MyReceiver receiver = new MyReceiver();
-        IntentFilter intentFilter =new IntentFilter();
-        intentFilter.addAction(MymusicPlayerService.MUSIC_START);
-        registerReceiver(receiver, intentFilter);
+//        //注册广播
+//        MyReceiver receiver = new MyReceiver();
+//        IntentFilter intentFilter =new IntentFilter();
+//        intentFilter.addAction(MymusicPlayerService.MUSIC_START);
+//        registerReceiver(receiver, intentFilter);
+        //注册
+        EventBus.getDefault().register(this);//this,当前类
     }
 
-    private class MyReceiver extends BroadcastReceiver{
+    private class MyReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            showData();
-            checkshowPlayMode();
+            ShowData(null);
         }
+    }
+
+    //订阅方法
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = false,priority = 0)
+    public void ShowData(MusicItem musicItem) {
+
+        mHandler.sendEmptyMessage(SHOW_LYRIC);
+
+        showData();
+        checkshowPlayMode();
     }
 
     private void showData() {
@@ -188,6 +222,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         musicPlayerPre = (ImageView)findViewById( R.id.music_player_pre );
         musicPlayerPause = (ImageView)findViewById( R.id.music_player_pause );
         musicPlayerNext = (ImageView)findViewById( R.id.music_player_next );
+        show_lyric = (ShowLyricView) findViewById(R.id.show_lyric);
 
         musicSwitch1.setOnClickListener(this);
         musicPlayerPre.setOnClickListener(this);
@@ -201,7 +236,13 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         if (v==musicSwitch1){
             setPlayMode();
         }else if (v==musicPlayerPre){
-
+            if (service!=null){
+                try {
+                    service.pre();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
         }else if (v==musicPlayerPause){
             if (service!=null){
                 try {
@@ -275,16 +316,12 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
             int playmode = service.getPlayMode();
             if (playmode==MymusicPlayerService.PLAY_NORMAL){
                 musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch1);
-
             }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
                 musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch3);
-
             }else if (playmode==MymusicPlayerService.PLAY_ALL){
                 musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch2);
-
             }else{
                 musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch1);
-
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -296,7 +333,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         Intent intent = new Intent(this, MymusicPlayerService.class);
         intent.setAction("ldp.com.mymultimediaplayer.OPEN_MUSIC");
         bindService(intent, con, Context.BIND_AUTO_CREATE);
-        startService(intent);//不至于实例化多个服务
+        startService(intent);//  不至于实例化多个服务
     }
 
     private void getData() {
@@ -321,9 +358,15 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         mHandler.removeCallbacksAndMessages(null);
-        if (receiver!=null){
-            unregisterReceiver(receiver);
-            receiver=null;
+//        if (receiver!=null){
+//            unregisterReceiver(receiver);
+//            receiver=null;
+//        }
+        //取消注册
+        EventBus.getDefault().unregister(this);
+        if (con!=null){
+            unbindService(con);
+            con=null;
         }
         super.onDestroy();
     }

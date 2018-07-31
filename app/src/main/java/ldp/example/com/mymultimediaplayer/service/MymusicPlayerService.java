@@ -16,6 +16,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -247,7 +249,7 @@ public class MymusicPlayerService extends Service {
         mMediaPlayer.start();
         //当播放歌曲的时候，在状态栏显示的时候，点击进入播放界面
         mManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        //
+        //状态栏通知
         Intent intent = new Intent(this, LocalMusicPlayerActivity.class);
         intent.putExtra("Notification",true);//标识来自状态栏
         PendingIntent pendingIntent = PendingIntent.getActivity(this,1,intent,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -349,7 +351,50 @@ public class MymusicPlayerService extends Service {
     }
 
     private void pre() {
+        //根据当前播放模式，设置下一个位置
+        setPreMusic();
+        //根据当前播放模式和下标播放
+        openPreMusic();
+    }
 
+    private void openPreMusic() {
+        int playmode = getPlayMode();
+        if (playmode==MymusicPlayerService.PLAY_NORMAL){
+            if (position>=0){
+                openMusic(position);
+            }else {
+                position = 0;
+            }
+        }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
+            openMusic(position);
+        }else if (playmode==MymusicPlayerService.PLAY_ALL){
+            openMusic(position);
+        }else{
+            if (position>=0){
+                openMusic(position);
+            }else {
+                position = 0;
+            }
+        }
+    }
+
+    private void setPreMusic() {
+        int playmode = getPlayMode();
+        if (playmode==MymusicPlayerService.PLAY_NORMAL){
+            position--;
+        }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
+            position--;
+            if (position<0){
+                position=mMusicItems.size()-1;
+            }
+        }else if (playmode==MymusicPlayerService.PLAY_ALL){
+            position--;
+            if (position<0){
+                position=mMusicItems.size()-1;
+            }
+        }else{
+            position--;
+        }
     }
 
     /**
@@ -358,6 +403,12 @@ public class MymusicPlayerService extends Service {
     private void setPlayMode(int playMode) {
         this.playmode = playMode;
         Cache.putInt(this,"play_mode",playMode);
+
+        if (playmode==PLAY_SINFLE){
+            mMediaPlayer.setLooping(true);
+        }else {
+            mMediaPlayer.setLooping(false);
+        }
     }
 
     private int getPlayMode() {
@@ -375,16 +426,17 @@ public class MymusicPlayerService extends Service {
         @Override
         public void onPrepared(MediaPlayer mp) {
             //通知activity获取信息（广播）
-            notifyChange(MUSIC_START);
+            //notifyChange(MUSIC_START);
+            EventBus.getDefault().post(musicItem);
             start();
         }
     }
 
-    private void notifyChange(String action) {
-        Intent intent = new Intent(action);
-        sendBroadcast(intent);
-
-    }
+//    private void notifyChange(String action) {
+//        Intent intent = new Intent(action);
+//        sendBroadcast(intent);
+//
+//    }
 
     private class MyOnCompletionListener2 implements MediaPlayer.OnCompletionListener {
         @Override
