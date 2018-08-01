@@ -62,6 +62,7 @@ interface IMyMusicPlayerAidlInterface {
 
                 void seekTo(int position);
 
-                }
+                 int getAudioSessionId();
+}
 
 

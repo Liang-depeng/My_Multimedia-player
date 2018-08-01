@@ -6,7 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.drawable.AnimationDrawable;
+import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -23,14 +23,17 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
+
+import java.io.File;
 
 import ldp.example.com.mymultimediaplayer.IMyMusicPlayerAidlInterface;
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.domain.MusicItem;
 import ldp.example.com.mymultimediaplayer.service.MymusicPlayerService;
+import ldp.example.com.mymultimediaplayer.utils.Lyricutils;
 import ldp.example.com.mymultimediaplayer.utils.TimeUtils;
+import ldp.example.com.mymultimediaplayer.view.BaseVisualizerView;
 import ldp.example.com.mymultimediaplayer.view.ShowLyricView;
 
 /**
@@ -40,8 +43,8 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
 
     private static final int PROGRESS = 1;
     private static final int SHOW_LYRIC = 2;
-    @ViewInject(R.id.music_pic1)
-    private ImageView music_pic_list01;
+   // @ViewInject(R.id.music_pic1)
+  //  private ImageView music_pic_list01;
 
     private int position;
     private IMyMusicPlayerAidlInterface service;
@@ -61,7 +64,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
     private boolean notification;
 
     private ShowLyricView show_lyric;
-
+    private BaseVisualizerView baseVisualizerView;
 
 
 
@@ -115,7 +118,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         x.view().inject(LocalMusicPlayerActivity.this);
         initData();
         findViews();
-        initView();
+      //  initView();
         getData();
         bindMusicService();
 
@@ -185,11 +188,90 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = false,priority = 0)
     public void ShowData(MusicItem musicItem) {
 
-        mHandler.sendEmptyMessage(SHOW_LYRIC);
-
+        //showLyric();
+        showgeci();
         showData();
         checkshowPlayMode();
+        setupVisualizerFxAndUi();
+
     }
+
+    private Visualizer mVisualizer;
+    /**
+     * 生成一个VisualizerView对象，使音频频谱的波段能够反映到 VisualizerView上
+     */
+    private void setupVisualizerFxAndUi()
+    {
+
+
+        try {
+            int audioSessionid = service.getAudioSessionId();
+            System.out.println("audioSessionid=="+audioSessionid);
+            mVisualizer = new Visualizer(audioSessionid);
+            // 参数内必须是2的位数
+            mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+            // 设置允许波形表示，并且捕获它
+            baseVisualizerView.setVisualizer(mVisualizer);
+            mVisualizer.setEnabled(true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void showgeci(){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                Lyricutils lyricutils = new Lyricutils();
+                //传歌词文件
+                try {
+                    String path = service.getMusicPath();
+
+                    path = path.substring(0,path.lastIndexOf("."));
+                    File file = new File(path+".lrc");
+                    if (!file.exists()){
+                        file = new File(path+ ".txt");
+                    }
+                    lyricutils.readLyricFile(file);
+                    show_lyric.setLyrics(lyricutils.getLyrics());
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                if (lyricutils.isLyric()){
+                    mHandler.sendEmptyMessage(SHOW_LYRIC);
+                }
+            }
+        }.start();
+    }
+
+//    private void showLyric(){
+//        Lyricutils lyricutils = new Lyricutils();
+//        //传歌词文件
+//        try {
+//            String path = service.getMusicPath();
+//
+//            path = path.substring(0,path.lastIndexOf("."));
+//            File file = new File(path+".lrc");
+//            if (!file.exists()){
+//                file = new File(path+ ".txt");
+//            }
+//            lyricutils.readLyricFile(file);
+//            show_lyric.setLyrics(lyricutils.getLyrics());
+//
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (lyricutils.isLyric()){
+//            mHandler.sendEmptyMessage(SHOW_LYRIC);
+//        }
+//
+//
+//    }
 
     private void showData() {
         try {
@@ -214,7 +296,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         mSinger = (TextView) findViewById(R.id.singer);
         mSong_name = (TextView) findViewById(R.id.song_name);
         musicHead = (RelativeLayout)findViewById( R.id.music_head );
-        musicPic1 = (ImageView)findViewById( R.id.music_pic1 );
+        //musicPic1 = (ImageView)findViewById( R.id.music_pic1 );
         seekbarMusicplayer = (SeekBar)findViewById( R.id.seekbar_musicplayer );
         musicPlayingTime = (TextView)findViewById( R.id.music_playing_time );
         musicDuration = (TextView)findViewById( R.id.music_duration );
@@ -223,6 +305,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         musicPlayerPause = (ImageView)findViewById( R.id.music_player_pause );
         musicPlayerNext = (ImageView)findViewById( R.id.music_player_next );
         show_lyric = (ShowLyricView) findViewById(R.id.show_lyric);
+        baseVisualizerView = (BaseVisualizerView) findViewById(R.id.baseVisualizerView);
 
         musicSwitch1.setOnClickListener(this);
         musicPlayerPre.setOnClickListener(this);
@@ -261,7 +344,7 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
             if (service!=null){
                 try {
                     service.next();
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -323,6 +406,13 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
             }else{
                 musicSwitch1.setImageResource(R.drawable.ic_musicplayer_switch1);
             }
+
+            //校验播放暂停按钮
+            if (service.isPlaying()){
+                musicPlayerPause.setImageResource(R.drawable.ic_musicplayer_pauseing);
+            }else {
+                musicPlayerPause.setImageResource(R.drawable.ic_musicplayer_starting);
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -345,9 +435,9 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
 
     private void initView() {
         // music_pic_list01 = (ImageView) findViewById(R.id.music_pic1);
-        music_pic_list01.setBackgroundResource(R.drawable.music_pic_list);
-        AnimationDrawable animationDrawable = (AnimationDrawable) music_pic_list01.getBackground();
-        animationDrawable.start();
+      //  music_pic_list01.setBackgroundResource(R.drawable.music_pic_list);
+       // AnimationDrawable animationDrawable = (AnimationDrawable) music_pic_list01.getBackground();
+        //animationDrawable.start();
     }
 
     @Override
@@ -391,6 +481,14 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
 
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mVisualizer!=null){
+            mVisualizer.release();
         }
     }
 }

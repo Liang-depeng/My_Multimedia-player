@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
@@ -96,7 +95,7 @@ public class MusicPager extends BasePager {
             @Override
             public void run() {
                 super.run();
-                SystemClock.sleep(1000);
+
                 mMusicItems = new ArrayList<>();
 
                 ContentResolver resolver = context.getContentResolver();
@@ -116,7 +115,9 @@ public class MusicPager extends BasePager {
                         //唱片
                         MediaStore.Audio.Media.ALBUM,
                         //唱片ID
-                        MediaStore.Audio.Media.ALBUM_ID
+                        MediaStore.Audio.Media.ALBUM_ID,
+
+                        MediaStore.Audio.Media.TITLE
                 };
 
                 Cursor cursor = resolver.query(uri, objs, null, null, null);
@@ -148,6 +149,9 @@ public class MusicPager extends BasePager {
                         musicItem.setAlbum_id(abbum_id);
 
                         musicItem.setMusic_pic(getAlbumArt(abbum_id));
+
+                        String title = cursor.getString(7);
+                        musicItem.setTitle(title);
                     }
                     cursor.close();
                 }

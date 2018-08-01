@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
 
     <application
@@ -26,7 +27,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity" android:launchMode="singleTask"
-            android:configChanges="keyboard|screenSize|orientation">
+            android:configChanges="keyboard|screenSize|orientation"
+            android:screenOrientation="portrait">
         </activity>
         <!--android:screenOrientation="landscape"-->
         <activity android:name=".activity.SystemVideoPlayer"

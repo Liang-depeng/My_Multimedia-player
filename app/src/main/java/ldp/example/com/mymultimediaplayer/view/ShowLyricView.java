@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import java.util.ArrayList;
 
 import ldp.example.com.mymultimediaplayer.domain.Lyric;
+import ldp.example.com.mymultimediaplayer.utils.DensityUtils;
 
 /**
  * created by ldp at 2018/7/31
@@ -22,10 +23,10 @@ public class ShowLyricView extends android.support.v7.widget.AppCompatTextView {
     private Paint paint2;//其他歌词
     private int width, height;
     private int index;//歌词列表中的索引
-    private int text_height = 25;
-    private int currentPosition;//当前播放进度
-    private long mSleepTime;
-    private long mTimePoint;
+    private float text_height;
+    private float currentPosition;//当前播放进度
+    private float mSleepTime;
+    private float mTimePoint;
 
     public void setLyrics(ArrayList<Lyric> lyrics) {
         this.lyrics = lyrics;
@@ -41,31 +42,33 @@ public class ShowLyricView extends android.support.v7.widget.AppCompatTextView {
 
     public ShowLyricView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView();
+        initView(context);
     }
 
-    private void initView() {
+    private void initView(Context context) {
+
+        text_height = DensityUtils.dip2px(context,21);
 
         paint = new Paint();
         paint.setColor(Color.WHITE);
-        paint.setTextSize(15);
+        paint.setTextSize(DensityUtils.dip2px(context,14));
         paint.setAntiAlias(true);
         paint.setTextAlign(Paint.Align.CENTER);//居中
 
         paint2 = new Paint();
         paint2.setColor(Color.GRAY);
-        paint2.setTextSize(15);
+        paint2.setTextSize(DensityUtils.dip2px(context,15));
         paint2.setAntiAlias(true);
         paint2.setTextAlign(Paint.Align.CENTER);//居中
 
-        lyrics = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            Lyric lyric = new Lyric();
-            lyric.setTimepoint(1000 * i);
-            lyric.setSleepHeightLightTime(1500 + i);
-            lyric.setContent(i + "121212121212" + i);
-            lyrics.add(lyric);
-        }
+//        lyrics = new ArrayList<>();
+//        for (int i = 0; i < 100; i++) {
+//            Lyric lyric = new Lyric();
+//            lyric.setTimepoint(1000 * i);
+//            lyric.setSleepHeightLightTime(1500 + i);
+//            lyric.setContent(i + "121212121212" + i);
+//            lyrics.add(lyric);
+//        }
 
     }
 
@@ -74,11 +77,26 @@ public class ShowLyricView extends android.support.v7.widget.AppCompatTextView {
         super.onDraw(canvas);
 
         if (lyrics != null && lyrics.size() > 0) {
+
+            //歌词往上推移
+            float plush =0;
+            if (mSleepTime==0){
+                plush=0;
+            }else {
+                //平移
+              //  float delta = ((currentPosition-mTimePoint)/mSleepTime)*text_height;
+
+                plush=text_height+((currentPosition-mTimePoint)/mSleepTime)*text_height;
+            }
+            canvas.translate(0,-plush);
+
+
+
             //绘制当前歌词
             String current_content = lyrics.get(index).getContent();
             canvas.drawText(current_content, width / 2, height / 2, paint);
             //绘制前面部分
-            int Y = height / 2;
+            float Y = height / 2;
 
             for (int i = index - 1; i >= 0; i--) {
                 String pre_content = lyrics.get(i).getContent();

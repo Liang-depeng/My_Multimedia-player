@@ -58,7 +58,7 @@ public class MusicPagerAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.local_music_name.setText(mMusicItems.get(position).getName());
+        viewHolder.local_music_name.setText(mMusicItems.get(position).getTitle());
         viewHolder.local_video_singer.setText(mMusicItems.get(position).getSingerName());
         viewHolder.ic_video_pic.setImageBitmap(mMusicItems.get(position).getMusic_pic());
         viewHolder.local_music_size.setText(android.text.format.Formatter.formatFileSize(mContext,mMusicItems.get(position).getMusicsize()));

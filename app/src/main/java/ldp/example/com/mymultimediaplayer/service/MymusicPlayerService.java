@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -21,7 +22,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import io.vov.vitamio.MediaPlayer;
 import ldp.example.com.mymultimediaplayer.IMyMusicPlayerAidlInterface;
 import ldp.example.com.mymultimediaplayer.R;
 import ldp.example.com.mymultimediaplayer.activity.LocalMusicPlayerActivity;
@@ -34,7 +34,7 @@ import ldp.example.com.mymultimediaplayer.utils.Cache;
 public class MymusicPlayerService extends Service {
 
     public static final String MUSIC_START = "ldp.com.example.mymultimediaplayer.MUSIC_START";
-    private ArrayList<MusicItem> mMusicItems;
+    private ArrayList<MusicItem> musicItems;
     private int position;
     private MusicItem musicItem;
     private MediaPlayer mMediaPlayer;
@@ -56,7 +56,7 @@ public class MymusicPlayerService extends Service {
             @Override
             public void run() {
                 super.run();
-                mMusicItems = new ArrayList<>();
+                musicItems = new ArrayList<>();
 
                 ContentResolver resolver = getContentResolver();
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -75,7 +75,9 @@ public class MymusicPlayerService extends Service {
                         //唱片
                         MediaStore.Audio.Media.ALBUM,
                         //唱片ID
-                        MediaStore.Audio.Media.ALBUM_ID
+                        MediaStore.Audio.Media.ALBUM_ID,
+
+                        MediaStore.Audio.Media.TITLE
                 };
 
                 Cursor cursor = resolver.query(uri, objs, null, null, null);
@@ -83,7 +85,7 @@ public class MymusicPlayerService extends Service {
                     while (cursor.moveToNext()) {
                         MusicItem musicItem = new MusicItem();
 
-                        mMusicItems.add(musicItem);
+                        musicItems.add(musicItem);
 
                         String name = cursor.getString(0);
                         musicItem.setName(name);
@@ -105,6 +107,9 @@ public class MymusicPlayerService extends Service {
 
                         int abbum_id = cursor.getInt(6);
                         musicItem.setAlbum_id(abbum_id);
+
+                        String title = cursor.getString(7);
+                        musicItem.setTitle(title);
                     }
                     cursor.close();
                 }
@@ -192,6 +197,11 @@ public class MymusicPlayerService extends Service {
         public void seekTo(int position) throws RemoteException {
             mMediaPlayer.seekTo(position);
         }
+
+        @Override
+        public int getAudioSessionId() throws RemoteException {
+            return mMediaPlayer.getAudioSessionId();
+        }
     };
 
     @Nullable
@@ -207,8 +217,8 @@ public class MymusicPlayerService extends Service {
      */
     private void openMusic(int position) {
         this.position = position;
-        if (mMusicItems!=null&&mMusicItems.size()>0){
-            musicItem = mMusicItems.get(position);
+        if (musicItems!=null&&musicItems.size()>0){
+            musicItem = musicItems.get(position);
 
             if (mMediaPlayer!=null){
 //                mMediaPlayer.release();
@@ -216,7 +226,7 @@ public class MymusicPlayerService extends Service {
             }
 
             try {
-                mMediaPlayer = new MediaPlayer(this);
+                mMediaPlayer = new MediaPlayer();
 
                 mMediaPlayer.setOnPreparedListener(new MyOnPreparedListener2());
                 mMediaPlayer.setOnCompletionListener(new MyOnCompletionListener2());
@@ -295,11 +305,11 @@ public class MymusicPlayerService extends Service {
     }
 
     private String getMusicName() {
-        return musicItem.getName();
+        return musicItem.getTitle();
     }
 
     private String getMusicPath() {
-        return "";
+        return musicItem.getData_music();
     }
 
     private void next() {
@@ -316,12 +326,12 @@ public class MymusicPlayerService extends Service {
             position++;
         }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
             position++;
-            if (position>=mMusicItems.size()){
+            if (position>=musicItems.size()){
                 position=0;
             }
         }else if (playmode==MymusicPlayerService.PLAY_ALL){
             position++;
-            if (position>=mMusicItems.size()){
+            if (position>=musicItems.size()){
                 position=0;
             }
         }else{
@@ -332,20 +342,20 @@ public class MymusicPlayerService extends Service {
     private void openNextMusic() {
         int playmode = getPlayMode();
         if (playmode==MymusicPlayerService.PLAY_NORMAL){
-            if (position<mMusicItems.size()){
+            if (position<musicItems.size()){
                 openMusic(position);
             }else {
-                position = mMusicItems.size()-1;
+                position = musicItems.size()-1;
             }
         }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
             openMusic(position);
         }else if (playmode==MymusicPlayerService.PLAY_ALL){
             openMusic(position);
         }else{
-            if (position<mMusicItems.size()){
+            if (position<musicItems.size()){
                 openMusic(position);
             }else {
-                position = mMusicItems.size()-1;
+                position = musicItems.size()-1;
             }
         }
     }
@@ -385,12 +395,12 @@ public class MymusicPlayerService extends Service {
         }else if (playmode==MymusicPlayerService.PLAY_SINFLE){
             position--;
             if (position<0){
-                position=mMusicItems.size()-1;
+                position=musicItems.size()-1;
             }
         }else if (playmode==MymusicPlayerService.PLAY_ALL){
             position--;
             if (position<0){
-                position=mMusicItems.size()-1;
+                position=musicItems.size()-1;
             }
         }else{
             position--;

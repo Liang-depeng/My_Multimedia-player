@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
  */
 public class MusicItem {
 
+    private String title;
+
     private String name;
 
     private long duration;
@@ -99,5 +101,13 @@ public class MusicItem {
 
     public void setSingerName(String singerName) {
         this.singerName = singerName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

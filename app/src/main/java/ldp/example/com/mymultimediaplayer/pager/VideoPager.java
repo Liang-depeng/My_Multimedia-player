@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,9 +29,11 @@ import ldp.example.com.mymultimediaplayer.base.BasePager;
 import ldp.example.com.mymultimediaplayer.domain.MediaItem;
 import ldp.example.com.mymultimediaplayer.utils.LogUtil;
 
+
 /**
  * created by ldp at 2018/7/14
  */
+
 public class VideoPager extends BasePager {
     private ListView local_video_list;
     private TextView local_no_video;
@@ -111,7 +112,7 @@ public class VideoPager extends BasePager {
             @Override
             public void run() {
                 super.run();
-                SystemClock.sleep(1000);
+
                 mMediaItems = new ArrayList<>();
 
                 ContentResolver resolver = context.getContentResolver();

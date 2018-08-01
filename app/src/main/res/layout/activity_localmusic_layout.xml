@@ -11,18 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         
-        <ImageView
-            android:id="@+id/music_pic1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/now_playing_matrix_01"
-            android:layout_marginTop="10dp"
+        <!--<ImageView-->
+            <!--android:visibility="gone"-->
+            <!--android:id="@+id/music_pic1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/now_playing_matrix_01"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_centerHorizontal="true"/>-->
+        <ldp.example.com.mymultimediaplayer.view.BaseVisualizerView
+            android:id="@+id/baseVisualizerView"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
             android:layout_centerHorizontal="true"/>
         <TextView
             android:id="@+id/song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="庐州月光"
+            android:singleLine="true"
             android:textColor="#fff"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="60dp"
