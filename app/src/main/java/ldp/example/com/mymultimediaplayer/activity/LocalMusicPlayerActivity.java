@@ -202,8 +202,6 @@ public class LocalMusicPlayerActivity extends Activity implements View.OnClickLi
      */
     private void setupVisualizerFxAndUi()
     {
-
-
         try {
             int audioSessionid = service.getAudioSessionId();
             System.out.println("audioSessionid=="+audioSessionid);

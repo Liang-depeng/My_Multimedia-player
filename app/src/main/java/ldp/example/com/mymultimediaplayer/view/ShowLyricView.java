@@ -51,7 +51,7 @@ public class ShowLyricView extends android.support.v7.widget.AppCompatTextView {
 
         paint = new Paint();
         paint.setColor(Color.WHITE);
-        paint.setTextSize(DensityUtils.dip2px(context,14));
+        paint.setTextSize(DensityUtils.dip2px(context,15));
         paint.setAntiAlias(true);
         paint.setTextAlign(Paint.Align.CENTER);//居中
 

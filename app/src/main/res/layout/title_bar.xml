@@ -12,7 +12,7 @@
         android:id="@+id/imageView_mine"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_weight="1"
+        android:layout_marginLeft="20dp"
         android:src="@drawable/ic_test" />
 
     <TextView
@@ -27,7 +27,8 @@
         android:textColor="#D3D3D3"
         android:background="@drawable/ic_searchback"
         android:drawableLeft="@drawable/ic_search"
-        android:drawablePadding="10dp"/>
+        android:drawablePadding="10dp"
+        android:visibility="gone"/>
 
 
 

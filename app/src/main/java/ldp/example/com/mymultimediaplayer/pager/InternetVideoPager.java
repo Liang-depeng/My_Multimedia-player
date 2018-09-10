@@ -89,10 +89,14 @@ public class InternetVideoPager extends BasePager {
 
     private void getDataFromInternet() {
         RequestParams params = new RequestParams(Constants.INTERNET_URL);
+
+
+
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 LogUtil.e("联网 OJBK " + result);
+               // LogUtil.e("当前线程" + Thread.currentThread().getName());
                 progressData(result);
                 Cache.putString(context,"Cache_data",result);
             }

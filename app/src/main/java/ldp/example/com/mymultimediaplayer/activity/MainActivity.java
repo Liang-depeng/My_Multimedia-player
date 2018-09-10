@@ -1,6 +1,8 @@
 package ldp.example.com.mymultimediaplayer.activity;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -10,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +54,7 @@ public class MainActivity extends FragmentActivity {
 //        /**
 //         * 运行时权限
 //         * 进去获取需要的权限
-//         * 之前放在加载页面之前，老是崩掉...
+//         *
 //         */
 //        isGrantExternalRW((Activity) MainActivity.this);
 
@@ -199,7 +202,38 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-//
+    /**
+     * 返回键
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    private boolean isExit = false;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (position!=0){
+                position =0;
+                rg_tab.check(R.id.rb_local_music);
+                return true;
+            }else if (!isExit){
+                isExit = true;
+                Toast.makeText(MainActivity.this,"再按一次推出",Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isExit = false;
+                    }
+                },2000);
+                return  true;
+            }
+
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    //
 //    private void requestPermission(){
 //        if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
 //                !=PackageManager.PERMISSION_GRANTED){

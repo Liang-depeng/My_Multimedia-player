@@ -7,6 +7,7 @@
         android:id="@+id/local_music_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!--android:layout_marginBottom="0dp">-->
     </ListView>
 
     <TextView
@@ -25,4 +26,73 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         />
+    <!--<LinearLayout-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="#11000000"-->
+        <!--android:visibility="gone">-->
+
+        <!--<ImageView-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:src="@drawable/ic_test"/>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/local_music_name"-->
+                <!--android:singleLine="true"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:text="name"-->
+                <!--android:textSize="15dp"-->
+                <!--android:textColor="@android:color/black" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/local_video_singer"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:text="singer"-->
+                <!--android:textSize="10dp"-->
+                <!--android:layout_marginTop="3dp"-->
+                <!--/>-->
+        <!--</LinearLayout>-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/music_player_pre"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:src="@drawable/ic_musicplayer_pre"/>-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/music_player_pause"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:src="@drawable/ic_musicplayer_starting" />-->
+        <!--<ImageView-->
+            <!--android:id="@+id/music_player_next"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:src="@drawable/ic_musicplayer_next"/>-->
+
+    <!--</LinearLayout>-->
 </RelativeLayout>

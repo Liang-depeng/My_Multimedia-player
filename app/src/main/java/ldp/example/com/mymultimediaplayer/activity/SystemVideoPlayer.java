@@ -71,7 +71,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
     private TimeUtils mTimeUtils;
     private MyReceiver mMyReceiver; //监听电量变化广播
     private RelativeLayout mVideo_bofangqi;
-    private ArrayList<MediaItem> mMediaItems;//c传入的视频列表
+    private ArrayList<MediaItem> mMediaItems = null;//c传入的视频列表
     private int position;
 
     private GestureDetector mDetector;//手势识别器
@@ -128,16 +128,16 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             videoName.setText(mediaItem.getName());
             isNetUri = mTimeUtils.isNetUri(mediaItem.getData());
             mVideoView.setVideoPath(mediaItem.getData());
-
+            setButton();
         } else if (mUri != null) {
             videoName.setText(mUri.toString());
             isNetUri=mTimeUtils.isNetUri(mUri.toString());
             mVideoView.setVideoURI(mUri);
-
+            setButtononly_0ne();
         } else {
             Toast.makeText(this, "无数据传输", Toast.LENGTH_LONG).show();
         }
-        setButton();
+
     }
 
     private void getData() {
@@ -432,7 +432,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             }
         } else if (mUri != null) {
             //设置状态按钮，此时只有一个视频
-            setButton();
+            setButtononly_0ne();
         }
     }
 
@@ -453,7 +453,7 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
             }
         } else if (mUri != null) {
             //设置状态按钮，此时只有一个视频
-            setButton();
+            setButtononly_0ne();
         }
     }
 
@@ -491,12 +491,13 @@ public class SystemVideoPlayer extends Activity implements View.OnClickListener 
                 }
 
             }
-        } else if (mUri != null) {
-            btnVideoPre.setBackgroundResource(R.drawable.btn_pre_gray);
-            btnVideoPre.setEnabled(false);
-            btnVideoNext.setBackgroundResource(R.drawable.btn_next_gray);
-            btnVideoNext.setEnabled(false);
         }
+    }
+    private void setButtononly_0ne(){
+        btnVideoPre.setBackgroundResource(R.drawable.btn_pre_gray);
+        btnVideoPre.setEnabled(false);
+        btnVideoNext.setBackgroundResource(R.drawable.btn_next_gray);
+        btnVideoNext.setEnabled(false);
     }
 
     private Handler mHandler = new Handler() {
